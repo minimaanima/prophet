@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import {
   Activity,
   AlertCircle,
@@ -74,6 +75,13 @@ export function ProphetDashboard() {
         if (result.success) setScan(result.data);
       })
       .catch(() => undefined);
+
+    const openImportFromHash = () => {
+      if (window.location.hash === '#import') setImportOpen(true);
+    };
+    openImportFromHash();
+    window.addEventListener('hashchange', openImportFromHash);
+    return () => window.removeEventListener('hashchange', openImportFromHash);
   }, []);
 
   const positions = useMemo(() => scan
@@ -149,10 +157,10 @@ export function ProphetDashboard() {
       <div className="mx-auto grid max-w-[1500px] gap-6 px-4 py-6 sm:px-7 lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="hidden lg:block">
           <nav className="space-y-1 text-sm">
-            <a className="flex items-center gap-3 rounded-lg bg-white/7 px-3 py-2.5 font-medium text-white" href="#overview"><LayoutDashboard className="size-4 text-primary" />Overview</a>
-            <a className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition hover:bg-white/5 hover:text-white" href="#portfolio"><Activity className="size-4" />Portfolio</a>
-            <a className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition hover:bg-white/5 hover:text-white" href="#opportunities"><Sparkles className="size-4" />Opportunities</a>
-            <a className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition hover:bg-white/5 hover:text-white" href="#scans"><Clock3 className="size-4" />Scan history</a>
+            <Link className="flex items-center gap-3 rounded-lg bg-white/7 px-3 py-2.5 font-medium text-white" href="/"><LayoutDashboard className="size-4 text-primary" />Overview</Link>
+            <Link className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition hover:bg-white/5 hover:text-white" href="/portfolio"><Activity className="size-4" />Portfolio</Link>
+            <Link className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition hover:bg-white/5 hover:text-white" href="/opportunities"><Sparkles className="size-4" />Opportunities</Link>
+            <Link className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition hover:bg-white/5 hover:text-white" href="/scans"><Clock3 className="size-4" />Scan history</Link>
           </nav>
           <div className="mt-8 rounded-xl border border-primary/15 bg-primary/[.055] p-4">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[.12em] text-primary"><Bolt className="size-3.5" />Active theme</div>
@@ -201,7 +209,7 @@ export function ProphetDashboard() {
                   {positions.map((position) => (
                     <TableRow key={position.ticker} className="cursor-pointer border-white/8 hover:bg-white/[.035]">
                       <TableCell className="py-3.5 pl-5">
-                        <a className="font-mono text-sm font-semibold transition hover:text-primary" href={`/instruments/${position.ticker}`}>{position.ticker}</a>
+                        <Link className="font-mono text-sm font-semibold transition hover:text-primary" href={`/instruments/${position.ticker}`}>{position.ticker}</Link>
                         <div className="mt-0.5 text-xs text-muted-foreground">{position.name}</div>
                       </TableCell>
                       <TableCell className="text-right font-mono">${position.price.toFixed(2)}</TableCell>
