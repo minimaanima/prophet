@@ -9,6 +9,8 @@ Prophet records recurring AI investment assessments and displays them on top of 
 - Twelve Data (through a replaceable `MarketDataProvider`) supplies price history.
 - Manually imported ChatGPT scans supply assessment, thesis, catalysts, risks, events, sources, and opportunities.
 - The original scan JSON is always retained for audit and future reprocessing.
+- Current price and day change are displayed only from the active Twelve Data refresh window. Imported prices and stale cached quotes are never used as UI fallbacks.
+- Missing provider data is shown as unavailable; the application does not display demo or synthetic records.
 
 ## Initial portfolio
 

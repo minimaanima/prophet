@@ -8,7 +8,6 @@ import {
   AlertCircle,
   ArrowDownRight,
   ArrowUpRight,
-  Bolt,
   BrainCircuit,
   CheckCircle2,
   Clock3,
@@ -71,63 +70,6 @@ const nextScanByRunType: Record<
   market_close: { time: '09:00', detail: 'next day · Europe / Sofia' },
 };
 
-const fallbackPositions = [
-  {
-    ticker: 'SKHY',
-    name: 'SK hynix ADR',
-    price: 171.23,
-    day: 2.4,
-    signal: 'ADD',
-    score: 84,
-    delta: 6,
-  },
-  {
-    ticker: 'SGM',
-    name: 'Revolut instrument',
-    price: 45.18,
-    day: 0.8,
-    signal: 'ADD',
-    score: 79,
-    delta: 2,
-  },
-  {
-    ticker: 'NVDA',
-    name: 'NVIDIA',
-    price: 218.42,
-    day: -1.1,
-    signal: 'HOLD',
-    score: 75,
-    delta: -3,
-  },
-  {
-    ticker: 'MSFT',
-    name: 'Microsoft',
-    price: 513.08,
-    day: -0.4,
-    signal: 'HOLD',
-    score: 73,
-    delta: 0,
-  },
-  {
-    ticker: 'TMUS',
-    name: 'T-Mobile US',
-    price: 181.34,
-    day: 0.3,
-    signal: 'HOLD',
-    score: 70,
-    delta: 1,
-  },
-  {
-    ticker: 'AAPL',
-    name: 'Apple',
-    price: 320.16,
-    day: 0.6,
-    signal: 'WATCH',
-    score: 62,
-    delta: -5,
-  },
-];
-
 const signalClass: Record<string, string> = {
   ADD: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300',
   HOLD: 'border-sky-400/20 bg-sky-400/10 text-sky-300',
@@ -138,6 +80,12 @@ export function ProphetDashboard() {
   const router = useRouter();
   const [scan, setScan] = useState<Scan | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [latestImportedAt, setLatestImportedAt] = useState<string | null>(null);
+  const [marketDataConfigured, setMarketDataConfigured] = useState<
+    boolean | null
+  >(null);
+  const [now, setNow] = useState(() => Date.now());
   const [quotes, setQuotes] = useState<Record<string, MarketQuote>>({});
   const [importOpen, setImportOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -150,26 +98,53 @@ export function ProphetDashboard() {
 
   useEffect(() => {
     fetch('/api/scans')
-      .then(async (response) => (await response.json()) as { latest?: unknown })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Unable to load imported scans');
+        return (await response.json()) as {
+          latest?: unknown;
+          latestImportedAt?: string | null;
+        };
+      })
       .then(async (data) => {
+        setLatestImportedAt(data.latestImportedAt ?? null);
         const result = ScanSchema.safeParse(data.latest);
         if (result.success) {
           setScan(result.data);
           const quoteData = await fetchMarketQuotes(
             result.data.portfolio.map((item) => item.ticker),
           );
-          if (quoteData) setQuotes(quoteData.quotes);
+          if (quoteData) {
+            setQuotes(quoteData.quotes);
+            setMarketDataConfigured(quoteData.configured);
+          }
+        } else if (data.latest !== null && data.latest !== undefined) {
+          throw new Error('Latest imported scan is invalid');
+        } else {
+          const response = await fetch('/api/quotes');
+          const status = (await response.json()) as { configured?: boolean };
+          setMarketDataConfigured(Boolean(status.configured));
         }
       })
-      .catch(() => undefined)
+      .catch((reason: unknown) => {
+        setMarketDataConfigured(false);
+        setLoadError(
+          reason instanceof Error ? reason.message : 'Unable to load live data',
+        );
+      })
       .finally(() => setLoaded(true));
 
-    const openImportFromHash = () => {
+    const openDialogFromHash = () => {
       if (window.location.hash === '#import') setImportOpen(true);
+      if (window.location.hash === '#search') setSearchOpen(true);
     };
-    openImportFromHash();
-    window.addEventListener('hashchange', openImportFromHash);
-    return () => window.removeEventListener('hashchange', openImportFromHash);
+    openDialogFromHash();
+    window.addEventListener('hashchange', openDialogFromHash);
+    return () => window.removeEventListener('hashchange', openDialogFromHash);
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 60_000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -189,16 +164,12 @@ export function ProphetDashboard() {
         ? scan.portfolio.map((item) => ({
             ticker: item.ticker,
             name: item.name,
-            price: quotes[item.ticker]?.price ?? item.price?.value ?? null,
-            currency:
-              quotes[item.ticker]?.currency ??
-              item.price?.currency ??
-              item.currency,
-            day:
-              quotes[item.ticker]?.changePct ?? item.price?.change_pct ?? null,
+            price: quotes[item.ticker]?.price ?? null,
+            currency: quotes[item.ticker]?.currency ?? null,
+            day: quotes[item.ticker]?.changePct ?? null,
             signal: item.assessment.signal,
             score: item.assessment.score,
-            delta: item.delta.score_change ?? 0,
+            delta: item.delta.score_change ?? null,
           }))
         : [],
     [quotes, scan],
@@ -241,6 +212,7 @@ export function ProphetDashboard() {
     const result = (await response.json()) as {
       ok?: boolean;
       scan?: Scan;
+      importedAt?: string;
       errors?: Array<{ path: string; message: string }>;
     };
     if (!response.ok || !result.ok || !result.scan) {
@@ -251,24 +223,24 @@ export function ProphetDashboard() {
       return;
     }
     setScan(result.scan);
+    setLatestImportedAt(result.importedAt ?? null);
+    setLoadError(null);
     setQuotes({});
     try {
       const quoteData = await fetchMarketQuotes(
         result.scan.portfolio.map((item) => item.ticker),
       );
-      if (quoteData) setQuotes(quoteData.quotes);
+      if (quoteData) {
+        setQuotes(quoteData.quotes);
+        setMarketDataConfigured(quoteData.configured);
+      }
     } catch {
-      // The imported scan remains usable when live quotes are temporarily unavailable.
+      setMarketDataConfigured(false);
     }
     setImportState({
       kind: 'success',
       message: `${result.scan.portfolio.length} positions imported`,
     });
-  }
-
-  function loadExample() {
-    setImportText(JSON.stringify(exampleScan, null, 2));
-    setImportState({ kind: 'idle' });
   }
 
   return (
@@ -285,8 +257,14 @@ export function ProphetDashboard() {
           </div>
           <div className="hidden h-5 w-px bg-white/10 sm:block" />
           <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
-            <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
-            Twelve Data · 3 daily windows
+            <span
+              className={`size-1.5 rounded-full ${marketDataConfigured === true ? 'bg-emerald-400 shadow-[0_0_10px_#34d399]' : marketDataConfigured === false ? 'bg-rose-400' : 'bg-amber-400'}`}
+            />
+            {marketDataConfigured === null
+              ? 'Checking Twelve Data…'
+              : marketDataConfigured
+                ? 'Twelve Data configured'
+                : 'Twelve Data unavailable'}
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Button
@@ -340,16 +318,6 @@ export function ProphetDashboard() {
               Scan history
             </Link>
           </nav>
-          <div className="mt-8 rounded-xl border border-primary/15 bg-primary/[.055] p-4">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[.12em] text-primary">
-              <Bolt className="size-3.5" />
-              Active theme
-            </div>
-            <p className="mt-3 text-sm font-medium">AI power infrastructure</p>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              Grid, generation, storage, cooling and onsite power.
-            </p>
-          </div>
         </aside>
 
         <section id="overview" className="min-w-0">
@@ -358,7 +326,9 @@ export function ProphetDashboard() {
               <p className="font-mono text-[11px] uppercase tracking-[.16em] text-primary">
                 {scan
                   ? `${scan.run_type.replaceAll('_', ' ')} · ${new Date(scan.generated_at).toLocaleString('en-GB', { timeZone: 'Europe/Sofia', dateStyle: 'medium', timeStyle: 'short' })}`
-                  : 'Market close · 31 Aug 2026'}
+                  : loaded
+                    ? 'No imported scan'
+                    : 'Loading scan data…'}
               </p>
               <h1 className="mt-2 text-3xl font-semibold tracking-[-.04em] sm:text-4xl">
                 Portfolio intelligence
@@ -368,8 +338,10 @@ export function ProphetDashboard() {
               </p>
             </div>
             <div className="flex items-center gap-2 rounded-lg border border-white/8 bg-card px-3 py-2 text-xs text-muted-foreground">
-              <BrainCircuit className="size-4 text-primary" /> Last scan
-              processed 12 min ago
+              <BrainCircuit className="size-4 text-primary" />
+              {latestImportedAt
+                ? `Last scan imported ${formatRelativeTime(latestImportedAt, now)}`
+                : 'No scan imported'}
             </div>
           </div>
 
@@ -393,11 +365,11 @@ export function ProphetDashboard() {
             />
             <Metric
               label="Next scan"
-              value={scan ? nextScanByRunType[scan.run_type].time : '09:00'}
+              value={scan ? nextScanByRunType[scan.run_type].time : '—'}
               detail={
                 scan
                   ? nextScanByRunType[scan.run_type].detail
-                  : 'Europe / Sofia'
+                  : 'No scan imported'
               }
             />
           </div>
@@ -409,7 +381,7 @@ export function ProphetDashboard() {
             <CardHeader className="border-b border-white/8 pb-4">
               <CardTitle>Portfolio snapshot</CardTitle>
               <CardDescription>
-                Latest price and assessment from the selected scan.
+                Current Twelve Data quote and latest imported assessment.
               </CardDescription>
             </CardHeader>
             <CardContent className="px-0">
@@ -444,6 +416,15 @@ export function ProphetDashboard() {
                         className="h-28 text-center text-sm text-muted-foreground"
                       >
                         Loading portfolio and market quotes…
+                      </TableCell>
+                    </TableRow>
+                  ) : loadError ? (
+                    <TableRow className="border-white/8">
+                      <TableCell
+                        colSpan={6}
+                        className="h-28 text-center text-sm text-rose-300"
+                      >
+                        {loadError}
                       </TableCell>
                     </TableRow>
                   ) : positions.length === 0 ? (
@@ -505,10 +486,11 @@ export function ProphetDashboard() {
                           {position.score}
                         </TableCell>
                         <TableCell
-                          className={`pr-5 text-right font-mono ${position.delta > 0 ? 'text-emerald-300' : position.delta < 0 ? 'text-rose-300' : 'text-muted-foreground'}`}
+                          className={`pr-5 text-right font-mono ${position.delta !== null && position.delta > 0 ? 'text-emerald-300' : position.delta !== null && position.delta < 0 ? 'text-rose-300' : 'text-muted-foreground'}`}
                         >
-                          {position.delta > 0 ? '+' : ''}
-                          {position.delta}
+                          {position.delta === null
+                            ? '—'
+                            : `${position.delta > 0 ? '+' : ''}${position.delta}`}
                         </TableCell>
                       </TableRow>
                     ))
@@ -610,13 +592,6 @@ export function ProphetDashboard() {
                   }}
                 />
               </label>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={loadExample}
-              >
-                Load valid example
-              </Button>
               {importState.kind === 'success' && (
                 <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/8 p-3 text-xs text-emerald-200">
                   <div className="flex items-center gap-2 font-medium">
@@ -702,59 +677,18 @@ function Metric({
   );
 }
 
-const exampleScan = {
-  schema_version: '1.0',
-  scan_run_id: 'scan_2026_08_31_close_001',
-  generated_at: '2026-08-31T23:05:00+03:00',
-  run_type: 'market_close',
-  market: 'US',
-  market_summary: {
-    sentiment: 'bullish',
-    summary: 'Semiconductors led gains while defensive sectors lagged.',
-  },
-  portfolio: fallbackPositions.map((item) => ({
-    ticker: item.ticker,
-    name: item.name,
-    exchange: item.ticker === 'SGM' ? null : 'NASDAQ',
-    instrument_type: 'equity',
-    currency: 'USD',
-    price: {
-      value: item.price,
-      currency: 'USD',
-      timestamp: '2026-08-31T20:00:00Z',
-      previous_close: null,
-      change: null,
-      change_pct: item.day,
-      source: 'scan',
-    },
-    assessment: {
-      signal: item.signal,
-      score: item.score,
-      confidence: 0.8,
-      risk:
-        item.ticker === 'SKHY' || item.ticker === 'NVDA' ? 'high' : 'medium',
-    },
-    thesis: {
-      status:
-        item.delta > 0
-          ? 'improving'
-          : item.delta < 0
-            ? 'deteriorating'
-            : 'unchanged',
-      summary:
-        'Latest evidence remains consistent with the monitored investment thesis.',
-      changed_since_previous_scan: item.delta !== 0,
-    },
-    catalysts: [],
-    risks: [],
-    events: [],
-    delta: {
-      score_change: item.delta,
-      signal_changed: false,
-      thesis_changed: item.delta !== 0,
-    },
-    summary: '',
-  })),
-  opportunities: [],
-  meta: { input_method: 'manual' },
-};
+function formatRelativeTime(value: string, now: number) {
+  const timestamp = new Date(value).getTime();
+  if (!Number.isFinite(timestamp)) return 'at an unknown time';
+  const seconds = Math.max(0, Math.floor((now - timestamp) / 1000));
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} min ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hr ago`;
+  return new Date(value).toLocaleString('en-GB', {
+    timeZone: 'Europe/Sofia',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+}

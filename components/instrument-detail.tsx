@@ -139,11 +139,9 @@ export function InstrumentDetail({ ticker }: { ticker: string }) {
     );
 
   const current = instrument.current;
-  const price =
-    quote?.price ?? current.price?.value ?? marketPoints.at(-1)?.close ?? null;
-  const currency =
-    quote?.currency ?? current.price?.currency ?? current.currency;
-  const day = quote?.changePct ?? current.price?.change_pct ?? null;
+  const price = quote?.price ?? null;
+  const currency = quote?.currency ?? null;
+  const day = quote?.changePct ?? null;
   const latestEvent = [...current.events].sort((left, right) =>
     right.timestamp.localeCompare(left.timestamp),
   )[0];
@@ -160,7 +158,7 @@ export function InstrumentDetail({ ticker }: { ticker: string }) {
               className={`size-1.5 rounded-full ${providerConfigured ? 'bg-emerald-400' : 'bg-amber-400'}`}
             />
             {providerConfigured
-              ? 'Twelve Data connected'
+              ? 'Twelve Data configured'
               : 'Market series unavailable'}
           </div>
         </div>

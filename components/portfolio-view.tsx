@@ -27,10 +27,14 @@ export function PortfolioView() {
   const [scan, setScan] = useState<Scan | null>(null);
   const [quotes, setQuotes] = useState<Record<string, MarketQuote>>({});
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     void fetch('/api/scans')
-      .then(async (response) => (await response.json()) as { latest?: unknown })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Unable to load imported scans');
+        return (await response.json()) as { latest?: unknown };
+      })
       .then(async (data) => {
         const parsed = ScanSchema.safeParse(data.latest);
         if (parsed.success) {
@@ -39,9 +43,14 @@ export function PortfolioView() {
             parsed.data.portfolio.map((item) => item.ticker),
           );
           if (quoteData) setQuotes(quoteData.quotes);
-        }
+        } else if (data.latest !== null && data.latest !== undefined)
+          throw new Error('Latest imported scan is invalid');
       })
-      .catch(() => undefined)
+      .catch((reason: unknown) =>
+        setError(
+          reason instanceof Error ? reason.message : 'Unable to load portfolio',
+        ),
+      )
       .finally(() => setLoaded(true));
   }, []);
 
@@ -70,6 +79,8 @@ export function PortfolioView() {
         <CardContent className="px-0">
           {!loaded ? (
             <Status message="Loading portfolio…" />
+          ) : error ? (
+            <Status message={error} error />
           ) : !scan ? (
             <Status message="No valid scan has been imported yet." />
           ) : (
@@ -87,11 +98,9 @@ export function PortfolioView() {
               <TableBody>
                 {scan.portfolio.map((item) => {
                   const quote = quotes[item.ticker];
-                  const price = quote?.price ?? item.price?.value ?? null;
-                  const currency =
-                    quote?.currency ?? item.price?.currency ?? item.currency;
-                  const day =
-                    quote?.changePct ?? item.price?.change_pct ?? null;
+                  const price = quote?.price ?? null;
+                  const currency = quote?.currency ?? null;
+                  const day = quote?.changePct ?? null;
                   return (
                     <TableRow
                       key={item.ticker}
@@ -152,9 +161,17 @@ export function PortfolioView() {
   );
 }
 
-function Status({ message }: { message: string }) {
+function Status({
+  message,
+  error = false,
+}: {
+  message: string;
+  error?: boolean;
+}) {
   return (
-    <div className="grid min-h-64 place-items-center text-sm text-muted-foreground">
+    <div
+      className={`grid min-h-64 place-items-center text-sm ${error ? 'text-rose-300' : 'text-muted-foreground'}`}
+    >
       <div className="text-center">
         <Database className="mx-auto mb-3 size-6 text-primary" />
         {message}

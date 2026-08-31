@@ -177,8 +177,9 @@ export async function GET(request: Request) {
   }
 
   for (const symbol of symbols) {
-    if (!response.quotes[symbol] && cachedBySymbol.has(symbol))
-      response.quotes[symbol] = fromCache(cachedBySymbol.get(symbol)!);
+    const cachedQuote = cachedBySymbol.get(symbol);
+    if (!response.quotes[symbol] && cachedQuote?.refresh_slot === slot)
+      response.quotes[symbol] = fromCache(cachedQuote);
     const attempt = attemptsBySymbol.get(symbol);
     if (
       !response.quotes[symbol] &&
