@@ -1,5 +1,6 @@
 import { ensureDatabase } from '@/db/bootstrap';
 import type { MarketQuote, QuoteApiResponse } from '@/lib/market-data/provider';
+import { resolveMarketDataSymbol } from '@/lib/market-data/symbols';
 import { TwelveDataProvider } from '@/lib/market-data/twelve-data';
 
 type CachedQuote = {
@@ -97,14 +98,19 @@ export async function GET(request: Request) {
   const stale = symbols.filter(
     (symbol) =>
       cachedBySymbol.get(symbol)?.refresh_slot !== slot &&
-      attemptsBySymbol.get(symbol)?.refresh_slot !== slot,
+      (resolveMarketDataSymbol(symbol) !== symbol ||
+        attemptsBySymbol.get(symbol)?.refresh_slot !== slot),
   );
 
   if (stale.length && process.env.TWELVE_DATA_API_KEY) {
     const provider = new TwelveDataProvider(process.env.TWELVE_DATA_API_KEY);
     const results = await Promise.allSettled(
       stale.map(
-        async (symbol) => [symbol, await provider.getQuote(symbol)] as const,
+        async (symbol) =>
+          [
+            symbol,
+            await provider.getQuote(resolveMarketDataSymbol(symbol)),
+          ] as const,
       ),
     );
     const now = new Date().toISOString();
@@ -174,7 +180,11 @@ export async function GET(request: Request) {
     if (!response.quotes[symbol] && cachedBySymbol.has(symbol))
       response.quotes[symbol] = fromCache(cachedBySymbol.get(symbol)!);
     const attempt = attemptsBySymbol.get(symbol);
-    if (attempt?.refresh_slot === slot && attempt.last_error) {
+    if (
+      !response.quotes[symbol] &&
+      attempt?.refresh_slot === slot &&
+      attempt.last_error
+    ) {
       response.errors ??= {};
       response.errors[symbol] = attempt.last_error;
     }
