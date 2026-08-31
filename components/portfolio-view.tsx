@@ -42,7 +42,7 @@ export function PortfolioView() {
               <TableBody>{scan.portfolio.map((item) => (
                 <TableRow key={item.ticker} className="border-white/8 hover:bg-white/[.035]">
                   <TableCell className="py-3.5 pl-5"><Link className="font-mono font-semibold hover:text-primary" href={`/instruments/${item.ticker}`}>{item.ticker}</Link><div className="text-xs text-muted-foreground">{item.name}</div></TableCell>
-                  <TableCell className="text-right font-mono">{item.price ? `${item.price.currency ?? item.currency} ${item.price.value.toFixed(2)}` : '—'}</TableCell>
+                  <TableCell className="text-right font-mono">{item.price?.value != null ? `${item.price.currency ?? item.currency} ${item.price.value.toFixed(2)}` : '—'}</TableCell>
                   <TableCell className={`text-right font-mono ${(item.price?.change_pct ?? 0) >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}><span className="inline-flex items-center gap-1">{(item.price?.change_pct ?? 0) >= 0 ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}{Math.abs(item.price?.change_pct ?? 0).toFixed(1)}%</span></TableCell>
                   <TableCell className="text-center"><Badge variant="outline">{item.assessment.signal}</Badge></TableCell>
                   <TableCell className="text-right font-mono font-semibold">{item.assessment.score}</TableCell>

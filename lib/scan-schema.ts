@@ -4,6 +4,10 @@ export const SignalSchema = z.enum(['ADD', 'HOLD', 'WATCH', 'REDUCE', 'EXIT']);
 export const ThesisStatusSchema = z.enum(['improving', 'unchanged', 'deteriorating']);
 export const RiskSchema = z.enum(['low', 'medium', 'high', 'very_high']);
 export const RunTypeSchema = z.enum(['morning', 'market_open', 'market_close']);
+const CurrencySchema = z.union([
+  z.string().length(3).transform((value) => value.toUpperCase()),
+  z.literal('unknown'),
+]);
 
 const SourceSchema = z.object({
   name: z.string().min(1),
@@ -29,11 +33,11 @@ const PortfolioSnapshotSchema = z.looseObject({
   name: z.string().trim().min(1),
   exchange: z.string().optional().nullable(),
   instrument_type: z.string().optional().default('equity'),
-  currency: z.string().length(3).transform((value) => value.toUpperCase()),
+  currency: CurrencySchema,
   price: z.object({
-    value: z.number().nonnegative(),
-    currency: z.string().length(3).optional(),
-    timestamp: z.string().min(1),
+    value: z.number().nonnegative().nullable(),
+    currency: CurrencySchema.optional().nullable(),
+    timestamp: z.string().min(1).nullable(),
     previous_close: z.number().nonnegative().optional().nullable(),
     change: z.number().optional().nullable(),
     change_pct: z.number().optional().nullable(),

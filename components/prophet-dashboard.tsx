@@ -88,7 +88,7 @@ export function ProphetDashboard() {
     ? scan.portfolio.map((item) => ({
         ticker: item.ticker,
         name: item.name,
-        price: item.price?.value ?? 0,
+        price: item.price?.value ?? null,
         day: item.price?.change_pct ?? 0,
         signal: item.assessment.signal,
         score: item.assessment.score,
@@ -212,7 +212,7 @@ export function ProphetDashboard() {
                         <Link className="font-mono text-sm font-semibold transition hover:text-primary" href={`/instruments/${position.ticker}`}>{position.ticker}</Link>
                         <div className="mt-0.5 text-xs text-muted-foreground">{position.name}</div>
                       </TableCell>
-                      <TableCell className="text-right font-mono">${position.price.toFixed(2)}</TableCell>
+                      <TableCell className="text-right font-mono">{position.price === null ? '—' : `$${position.price.toFixed(2)}`}</TableCell>
                       <TableCell className={`text-right font-mono ${position.day >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
                         <span className="inline-flex items-center gap-1">{position.day >= 0 ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}{Math.abs(position.day).toFixed(1)}%</span>
                       </TableCell>
