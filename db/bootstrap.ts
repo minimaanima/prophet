@@ -30,10 +30,27 @@ export async function ensureDatabase() {
       created_at TEXT NOT NULL,
       FOREIGN KEY (snapshot_id) REFERENCES snapshots(id) ON DELETE CASCADE
     )`),
-    db.prepare('CREATE INDEX IF NOT EXISTS idx_scan_runs_generated_at ON scan_runs(generated_at)'),
-    db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_snapshots_scan_ticker ON snapshots(scan_run_id, ticker)'),
-    db.prepare('CREATE INDEX IF NOT EXISTS idx_snapshots_ticker_created ON snapshots(ticker, created_at)'),
-    db.prepare('CREATE INDEX IF NOT EXISTS idx_events_ticker_event_at ON events(ticker, event_at)'),
+    db.prepare(`CREATE TABLE IF NOT EXISTS market_quotes (
+      ticker TEXT PRIMARY KEY, price REAL NOT NULL, previous_close REAL, change REAL,
+      change_pct REAL, currency TEXT, price_timestamp TEXT, is_market_open INTEGER,
+      refresh_slot TEXT NOT NULL, fetched_at TEXT NOT NULL
+    )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS market_quote_attempts (
+      ticker TEXT PRIMARY KEY, refresh_slot TEXT NOT NULL, last_error TEXT,
+      attempted_at TEXT NOT NULL
+    )`),
+    db.prepare(
+      'CREATE INDEX IF NOT EXISTS idx_scan_runs_generated_at ON scan_runs(generated_at)',
+    ),
+    db.prepare(
+      'CREATE UNIQUE INDEX IF NOT EXISTS idx_snapshots_scan_ticker ON snapshots(scan_run_id, ticker)',
+    ),
+    db.prepare(
+      'CREATE INDEX IF NOT EXISTS idx_snapshots_ticker_created ON snapshots(ticker, created_at)',
+    ),
+    db.prepare(
+      'CREATE INDEX IF NOT EXISTS idx_events_ticker_event_at ON events(ticker, event_at)',
+    ),
   ]);
   return db;
 }
