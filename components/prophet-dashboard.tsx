@@ -62,6 +62,15 @@ import {
 import { fetchMarketQuotes } from '@/lib/market-data/client';
 import type { MarketQuote } from '@/lib/market-data/provider';
 
+const nextScanByRunType: Record<
+  Scan['run_type'],
+  { time: string; detail: string }
+> = {
+  morning: { time: '16:30', detail: 'Europe / Sofia' },
+  market_open: { time: '23:05', detail: 'Europe / Sofia' },
+  market_close: { time: '09:00', detail: 'next day · Europe / Sofia' },
+};
+
 const fallbackPositions = [
   {
     ticker: 'SKHY',
@@ -382,7 +391,15 @@ export function ProphetDashboard() {
               detail="since previous"
               positive
             />
-            <Metric label="Next scan" value="09:00" detail="Europe / Sofia" />
+            <Metric
+              label="Next scan"
+              value={scan ? nextScanByRunType[scan.run_type].time : '09:00'}
+              detail={
+                scan
+                  ? nextScanByRunType[scan.run_type].detail
+                  : 'Europe / Sofia'
+              }
+            />
           </div>
 
           <Card

@@ -16,11 +16,11 @@ Prophet records recurring AI investment assessments and displays them on top of 
 
 ## Scan schedule
 
-| Run type | Intended time | Purpose |
-| --- | --- | --- |
-| `morning` | 09:00 Europe/Sofia | Overnight news and preparation |
-| `market_open` | US market open | Opening reaction |
-| `market_close` | After US close | Daily recap |
+| Run type       | Intended time      | Purpose                        |
+| -------------- | ------------------ | ------------------------------ |
+| `morning`      | 09:00 Europe/Sofia | Overnight news and preparation |
+| `market_open`  | 16:30 Europe/Sofia | Opening reaction               |
+| `market_close` | 23:05 Europe/Sofia | Daily recap                    |
 
 Timestamps are stored with offsets/UTC. US session logic must use `America/New_York`; display defaults to `Europe/Sofia`.
 
