@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Activity,
   AlertCircle,
   ArrowDownRight,
   ArrowUpRight,
-  Bell,
   Bolt,
   BrainCircuit,
   CheckCircle2,
@@ -20,6 +20,16 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from '@/components/ui/command';
 import {
   Card,
   CardContent,
@@ -116,10 +126,12 @@ const signalClass: Record<string, string> = {
 };
 
 export function ProphetDashboard() {
+  const router = useRouter();
   const [scan, setScan] = useState<Scan | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [quotes, setQuotes] = useState<Record<string, MarketQuote>>({});
   const [importOpen, setImportOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [importText, setImportText] = useState('');
   const [importState, setImportState] = useState<{
     kind: 'idle' | 'saving' | 'error' | 'success';
@@ -149,6 +161,17 @@ export function ProphetDashboard() {
     openImportFromHash();
     window.addEventListener('hashchange', openImportFromHash);
     return () => window.removeEventListener('hashchange', openImportFromHash);
+  }, []);
+
+  useEffect(() => {
+    const openSearch = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setSearchOpen((open) => !open);
+      }
+    };
+    window.addEventListener('keydown', openSearch);
+    return () => window.removeEventListener('keydown', openSearch);
   }, []);
 
   const positions = useMemo(
@@ -257,11 +280,13 @@ export function ProphetDashboard() {
             Twelve Data · 3 daily windows
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <Button variant="ghost" size="icon" aria-label="Search">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Search portfolio"
+              onClick={() => setSearchOpen(true)}
+            >
               <Search />
-            </Button>
-            <Button variant="ghost" size="icon" aria-label="Notifications">
-              <Bell />
             </Button>
             <Button
               className="ml-1"
@@ -477,6 +502,56 @@ export function ProphetDashboard() {
           </Card>
         </section>
       </div>
+
+      <CommandDialog
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        title="Search portfolio"
+        description="Find an instrument from the latest imported scan."
+        className="max-w-lg border border-white/10 bg-[#111923] shadow-2xl"
+        showCloseButton
+      >
+        <Command>
+          <CommandInput placeholder="Search ticker or company name…" />
+          <CommandList>
+            <CommandEmpty>
+              {loaded
+                ? 'No matching instrument in the current portfolio.'
+                : 'Loading portfolio…'}
+            </CommandEmpty>
+            {positions.length > 0 && (
+              <CommandGroup
+                heading={`Current portfolio · ${positions.length} instruments`}
+              >
+                {positions.map((position) => (
+                  <CommandItem
+                    key={position.ticker}
+                    value={`${position.ticker} ${position.name}`}
+                    onSelect={() => {
+                      setSearchOpen(false);
+                      router.push(`/instruments/${position.ticker}`);
+                    }}
+                    className="py-3"
+                  >
+                    <Search className="size-4 text-primary" />
+                    <div className="min-w-0">
+                      <p className="font-mono font-semibold">
+                        {position.ticker}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {position.name}
+                      </p>
+                    </div>
+                    <CommandShortcut>
+                      {position.signal} · {position.score}
+                    </CommandShortcut>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </CommandDialog>
 
       <Dialog open={importOpen} onOpenChange={setImportOpen}>
         <DialogContent className="max-h-[88vh] max-w-3xl overflow-hidden border border-white/10 bg-[#111923] p-0 shadow-2xl">
