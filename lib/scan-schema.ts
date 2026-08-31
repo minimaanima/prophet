@@ -1,11 +1,18 @@
 import { z } from 'zod';
 
 export const SignalSchema = z.enum(['ADD', 'HOLD', 'WATCH', 'REDUCE', 'EXIT']);
-export const ThesisStatusSchema = z.enum(['improving', 'unchanged', 'deteriorating']);
+export const ThesisStatusSchema = z.enum([
+  'improving',
+  'unchanged',
+  'deteriorating',
+]);
 export const RiskSchema = z.enum(['low', 'medium', 'high', 'very_high']);
 export const RunTypeSchema = z.enum(['morning', 'market_open', 'market_close']);
 const CurrencySchema = z.union([
-  z.string().length(3).transform((value) => value.toUpperCase()),
+  z
+    .string()
+    .length(3)
+    .transform((value) => value.toUpperCase()),
   z.literal('unknown'),
 ]);
 
@@ -28,21 +35,28 @@ const EventSchema = z.object({
   verified: z.boolean().optional().default(false),
 });
 
-const PortfolioSnapshotSchema = z.looseObject({
-  ticker: z.string().trim().min(1).max(20).transform((value) => value.toUpperCase()),
+export const PortfolioSnapshotSchema = z.looseObject({
+  ticker: z
+    .string()
+    .trim()
+    .min(1)
+    .max(20)
+    .transform((value) => value.toUpperCase()),
   name: z.string().trim().min(1),
   exchange: z.string().optional().nullable(),
   instrument_type: z.string().optional().default('equity'),
   currency: CurrencySchema,
-  price: z.object({
-    value: z.number().nonnegative().nullable(),
-    currency: CurrencySchema.optional().nullable(),
-    timestamp: z.string().min(1).nullable(),
-    previous_close: z.number().nonnegative().optional().nullable(),
-    change: z.number().optional().nullable(),
-    change_pct: z.number().optional().nullable(),
-    source: z.enum(['market_data', 'scan', 'unknown']).default('scan'),
-  }).nullable(),
+  price: z
+    .object({
+      value: z.number().nonnegative().nullable(),
+      currency: CurrencySchema.optional().nullable(),
+      timestamp: z.string().min(1).nullable(),
+      previous_close: z.number().nonnegative().optional().nullable(),
+      change: z.number().optional().nullable(),
+      change_pct: z.number().optional().nullable(),
+      source: z.enum(['market_data', 'scan', 'unknown']).default('scan'),
+    })
+    .nullable(),
   assessment: z.object({
     signal: SignalSchema,
     score: z.number().min(0).max(100),
@@ -63,15 +77,18 @@ const PortfolioSnapshotSchema = z.looseObject({
   catalysts: z.array(z.record(z.string(), z.unknown())).optional().default([]),
   risks: z.array(z.record(z.string(), z.unknown())).optional().default([]),
   events: z.array(EventSchema).optional().default([]),
-  delta: z.looseObject({
-    previous_scan_run_id: z.string().optional().nullable(),
-    price_change_since_previous_scan_pct: z.number().optional().nullable(),
-    score_change: z.number().optional().nullable(),
-    signal_changed: z.boolean().optional().default(false),
-    previous_signal: SignalSchema.optional().nullable(),
-    thesis_changed: z.boolean().optional().default(false),
-    previous_thesis_status: ThesisStatusSchema.optional().nullable(),
-  }).optional().default({ signal_changed: false, thesis_changed: false }),
+  delta: z
+    .looseObject({
+      previous_scan_run_id: z.string().optional().nullable(),
+      price_change_since_previous_scan_pct: z.number().optional().nullable(),
+      score_change: z.number().optional().nullable(),
+      signal_changed: z.boolean().optional().default(false),
+      previous_signal: SignalSchema.optional().nullable(),
+      thesis_changed: z.boolean().optional().default(false),
+      previous_thesis_status: ThesisStatusSchema.optional().nullable(),
+    })
+    .optional()
+    .default({ signal_changed: false, thesis_changed: false }),
   sources: z.array(SourceSchema).optional().default([]),
   summary: z.string().optional().default(''),
 });
@@ -83,11 +100,20 @@ export const ScanSchema = z.looseObject({
   run_type: RunTypeSchema,
   market: z.string().min(1),
   market_summary: z.looseObject({
-    sentiment: z.enum(['very_bearish', 'bearish', 'neutral', 'bullish', 'very_bullish']),
+    sentiment: z.enum([
+      'very_bearish',
+      'bearish',
+      'neutral',
+      'bullish',
+      'very_bullish',
+    ]),
     summary: z.string().min(1),
   }),
   portfolio: z.array(PortfolioSnapshotSchema).min(1),
-  opportunities: z.array(z.record(z.string(), z.unknown())).optional().default([]),
+  opportunities: z
+    .array(z.record(z.string(), z.unknown()))
+    .optional()
+    .default([]),
   meta: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
