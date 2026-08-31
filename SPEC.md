@@ -64,6 +64,8 @@ The deployed MVP uses managed SQLite/D1 with relational tables for `instruments`
 
 The Twelve Data adapter is inactive until `TWELVE_DATA_API_KEY` is configured. Responses are cached by interval to preserve the free-plan budget. The provider abstraction allows a future migration without changing product components.
 
+Instrument pages use the 90 returned daily OHLC records for selectable line and candlestick views. SMA 20, EMA 20, RSI 14 and MACD 12/26/9 are calculated locally from those closes, so the indicator display adds no provider requests or API-credit usage.
+
 ## AI power infrastructure theme
 
 Every scan should always consider 2–3 opportunities across grid equipment, transformers, switchgear, transmission, utilities, gas turbines, nuclear, natural gas, power generation, storage, cooling, and onsite generation. Backlog and order growth are first-class evidence for relevant equipment suppliers.
