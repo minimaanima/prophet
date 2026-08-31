@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "scan_run_id": "scan_2026_08_31_close_001",
+  "generated_at": "2026-08-31T23:05:00+03:00",
+  "run_type": "market_close",
+  "market": "US",
+  "market_summary": {
+    "sentiment": "bullish",
+    "summary": "Semiconductors led gains while defensive sectors lagged."
+  },
+  "portfolio": [
+    {
+      "ticker": "SKHY",
+      "name": "SK hynix ADR",
+      "exchange": "NASDAQ",
+      "instrument_type": "equity",
+      "currency": "USD",
+      "price": {
+        "value": 171.23,
+        "currency": "USD",
+        "timestamp": "2026-08-31T20:00:00Z",
+        "previous_close": 167.21,
+        "change": 4.02,
+        "change_pct": 2.4,
+        "source": "scan"
+      },
+      "assessment": {
+        "signal": "ADD",
+        "score": 84,
+        "confidence": 0.82,
+        "risk": "high"
+      },
+      "thesis": {
+        "status": "improving",
+        "summary": "HBM demand remains strong while earnings expectations continue to rise.",
+        "changed_since_previous_scan": true,
+        "bull_case": "HBM leadership supports premium pricing.",
+        "bear_case": "Lower AI capex could compress margins.",
+        "key_assumption": "AI infrastructure spending remains strong."
+      },
+      "fundamentals": {},
+      "analysts": {},
+      "technicals": {},
+      "catalysts": [],
+      "risks": [],
+      "events": [],
+      "delta": {
+        "previous_scan_run_id": "scan_2026_08_31_open_001",
+        "price_change_since_previous_scan_pct": 1.8,
+        "score_change": 6,
+        "signal_changed": true,
+        "previous_signal": "HOLD",
+        "thesis_changed": true,
+        "previous_thesis_status": "unchanged"
+      },
+      "sources": [],
+      "summary": "No deterioration in the investment thesis."
+    }
+  ],
+  "opportunities": [],
+  "meta": {
+    "input_method": "manual"
+  }
+}
