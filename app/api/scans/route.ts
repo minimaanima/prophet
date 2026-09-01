@@ -19,15 +19,31 @@ export async function GET() {
 
   const history = await db
     .prepare(
-      `SELECT id, generated_at, run_type, market_sentiment, status
+      `SELECT id, generated_at, run_type, market_sentiment, status, raw_json
      FROM scan_runs ORDER BY created_at DESC LIMIT 20`,
     )
-    .all();
+    .all<{
+      id: string;
+      generated_at: string;
+      run_type: string;
+      market_sentiment: string | null;
+      status: string;
+      raw_json: string;
+    }>();
 
   return Response.json({
     latest: latest ? JSON.parse(latest.raw_json) : null,
     latestImportedAt: latest?.created_at ?? null,
-    history: history.results,
+    history: history.results.map(({ raw_json, ...run }) => {
+      let meta: unknown = null;
+      try {
+        const raw = JSON.parse(raw_json) as Record<string, unknown>;
+        meta = raw.meta ?? null;
+      } catch {
+        // Invalid imports can contain malformed JSON; their metadata is unavailable.
+      }
+      return { ...run, meta };
+    }),
   });
 }
 

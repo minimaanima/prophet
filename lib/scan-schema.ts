@@ -8,6 +8,13 @@ export const ThesisStatusSchema = z.enum([
 ]);
 export const RiskSchema = z.enum(['low', 'medium', 'high', 'very_high']);
 export const RunTypeSchema = z.enum(['morning', 'market_open', 'market_close']);
+const PriceSourceSchema = z.preprocess((value) => {
+  if (typeof value !== 'string') return value;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'stockanalysis' || normalized === 'stock analysis')
+    return 'stockanalysis';
+  return normalized;
+}, z.enum(['market_data', 'finviz', 'stockanalysis', 'scan', 'unknown']));
 const CurrencySchema = z.union([
   z
     .string()
@@ -25,7 +32,7 @@ const SourceSchema = z.object({
 
 const EventSchema = z.object({
   id: z.string().min(1),
-  timestamp: z.string().min(1),
+  timestamp: z.preprocess((value) => value ?? 'unknown', z.string().min(1)),
   type: z.string().min(1),
   title: z.string().min(1),
   summary: z.string().optional().default(''),
@@ -54,7 +61,7 @@ export const PortfolioSnapshotSchema = z.looseObject({
       previous_close: z.number().nonnegative().optional().nullable(),
       change: z.number().optional().nullable(),
       change_pct: z.number().optional().nullable(),
-      source: z.enum(['market_data', 'scan', 'unknown']).default('scan'),
+      source: PriceSourceSchema.default('scan'),
     })
     .nullable(),
   assessment: z.object({

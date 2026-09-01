@@ -93,42 +93,64 @@ export function InstrumentDetail({ ticker }: { ticker: string }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    void Promise.all([
-      fetch(`/api/instruments/${encodeURIComponent(ticker)}`).then(
-        async (response) => {
-          const data = (await response.json()) as InstrumentResponse & {
-            error?: string;
-          };
-          if (!response.ok)
-            throw new Error(data.error ?? 'Unable to load imported assessment');
-          return data;
-        },
-      ),
-      fetch(`/api/market/${encodeURIComponent(ticker)}`)
-        .then(
-          async (response) =>
-            (await response.json()) as {
-              configured?: boolean;
-              points?: PricePoint[];
-            },
-        )
-        .catch(() => ({ configured: false, points: [] })),
-      fetchMarketQuotes([ticker]).catch(() => null),
-    ])
-      .then(([instrumentData, marketData, quoteData]) => {
-        setInstrument(instrumentData);
-        setProviderConfigured(Boolean(marketData.configured));
-        setMarketPoints(marketData.points ?? []);
-        setQuote(quoteData?.quotes[ticker] ?? null);
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    void fetch('/api/instruments/' + encodeURIComponent(ticker))
+      .then(async (response) => {
+        const data = (await response.json()) as InstrumentResponse & {
+          error?: string;
+        };
+        if (!response.ok)
+          throw new Error(data.error ?? 'Unable to load imported assessment');
+        return data;
       })
-      .catch((reason: unknown) =>
-        setError(
-          reason instanceof Error
-            ? reason.message
-            : 'Unable to load instrument',
-        ),
+      .then((data) => {
+        if (!cancelled) setInstrument(data);
+      })
+      .catch((reason: unknown) => {
+        if (!cancelled)
+          setError(
+            reason instanceof Error
+              ? reason.message
+              : 'Unable to load instrument',
+          );
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    void fetch('/api/market/' + encodeURIComponent(ticker))
+      .then(async (response) =>
+        (await response.json()) as {
+          configured?: boolean;
+          points?: PricePoint[];
+        },
       )
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (cancelled) return;
+        setProviderConfigured(Boolean(data.configured));
+        setMarketPoints(data.points ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setProviderConfigured(false);
+          setMarketPoints([]);
+        }
+      });
+
+    void fetchMarketQuotes([ticker])
+      .then((data) => {
+        if (!cancelled) setQuote(data?.quotes[ticker] ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setQuote(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [ticker]);
 
   const points = useMemo<ChartPoint[]>(() => {

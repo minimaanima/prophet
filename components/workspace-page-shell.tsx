@@ -2,36 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  Activity,
-  Clock3,
-  Import,
-  LayoutDashboard,
-  Search,
-  Sparkles,
-} from 'lucide-react';
+import { Activity, Import, Search } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
+import {
+  MobileNavigationMenu,
+  type NavigationPage,
+  workspaceNavigation,
+} from '@/components/mobile-navigation-menu';
 import { cn } from '@/lib/utils';
-
-type ActivePage = 'overview' | 'portfolio' | 'opportunities' | 'scans';
-
-const navigation = [
-  { key: 'overview', label: 'Overview', href: '/', icon: LayoutDashboard },
-  { key: 'portfolio', label: 'Portfolio', href: '/portfolio', icon: Activity },
-  {
-    key: 'opportunities',
-    label: 'Opportunities',
-    href: '/opportunities',
-    icon: Sparkles,
-  },
-  { key: 'scans', label: 'Scan history', href: '/scans', icon: Clock3 },
-] as const;
 
 export function WorkspacePageShell({
   active,
   children,
 }: {
-  active: ActivePage;
+  active: NavigationPage;
   children: React.ReactNode;
 }) {
   const [marketDataConfigured, setMarketDataConfigured] = useState<
@@ -51,12 +35,12 @@ export function WorkspacePageShell({
   return (
     <main className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-20 border-b border-white/8 bg-background/85 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-[1500px] items-center gap-5 px-4 sm:px-7">
+        <div className="mx-auto flex h-16 max-w-[1500px] items-center gap-2 px-4 sm:gap-5 sm:px-7">
           <Link className="flex items-center gap-2.5" href="/">
             <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[0_0_30px_rgba(121,255,194,.18)]">
               <Activity className="size-4" />
             </span>
-            <span className="font-mono text-sm font-semibold tracking-[0.18em]">
+            <span className="hidden font-mono text-sm font-semibold tracking-[0.18em] min-[430px]:inline">
               PROPHET
             </span>
           </Link>
@@ -73,19 +57,23 @@ export function WorkspacePageShell({
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Link
-              className={buttonVariants({ variant: 'ghost', size: 'icon' })}
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'icon' }),
+                'hidden sm:inline-flex',
+              )}
               href="/#search"
               aria-label="Search portfolio"
             >
               <Search />
             </Link>
             <Link
-              className={cn(buttonVariants({ size: 'lg' }), 'ml-1')}
+              className={buttonVariants({ size: 'lg' })}
               href="/#import"
             >
               <Import />
               Import scan
             </Link>
+            <MobileNavigationMenu active={active} />
           </div>
         </div>
       </header>
@@ -93,7 +81,7 @@ export function WorkspacePageShell({
       <div className="mx-auto grid max-w-[1500px] gap-6 px-4 py-6 sm:px-7 lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="hidden lg:block">
           <nav className="space-y-1 text-sm" aria-label="Primary navigation">
-            {navigation.map((item) => {
+            {workspaceNavigation.map((item) => {
               const Icon = item.icon;
               const selected = active === item.key;
               return (

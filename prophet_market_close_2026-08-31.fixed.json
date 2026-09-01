@@ -1,0 +1,791 @@
+{
+  "schema_version": "1.0",
+  "scan_run_id": "scan_2026_08_31_market_close_001",
+  "generated_at": "2026-08-31T23:08:00+03:00",
+  "run_type": "market_close",
+  "market": "US",
+  "market_summary": {
+    "sentiment": "bearish",
+    "summary": "US equities finished lower as renewed US-Iran tension around the Strait of Hormuz pushed Brent crude to about $90.49 and reinforced inflation and Fed-rate concerns. The S&P 500 fell 0.5%, Nasdaq 0.4% and Dow 0.6%. Energy outperformed while higher-duration growth remained more selective.",
+    "sp500_change_pct": -0.5,
+    "nasdaq_change_pct": -0.4,
+    "dow_change_pct": -0.6,
+    "vix": null,
+    "major_drivers": [
+      "US-Iran escalation around the Strait of Hormuz",
+      "Brent crude near $90.49 per barrel",
+      "Persistent inflation above 3%",
+      "Renewed expectations for additional Federal Reserve tightening",
+      "Month-end positioning",
+      "AI infrastructure demand remains structurally strong despite risk-off macro conditions"
+    ]
+  },
+  "portfolio": [
+    {
+      "ticker": "TMUS",
+      "name": "T-Mobile US",
+      "exchange": "NASDAQ",
+      "instrument_type": "equity",
+      "currency": "USD",
+      "price": {
+        "value": 180.44,
+        "currency": "USD",
+        "timestamp": "2026-08-31T15:59:00-04:00",
+        "previous_close": 181.37,
+        "change": -0.93,
+        "change_pct": -0.51,
+        "source": "scan"
+      },
+      "assessment": {
+        "signal": "HOLD",
+        "score": 75,
+        "confidence": 0.84,
+        "risk": "medium"
+      },
+      "thesis": {
+        "status": "unchanged",
+        "summary": "T-Mobile remains a relatively defensive portfolio holding with attractive cash-flow valuation and moderate operating growth. The stock closed only modestly lower during a broadly risk-off session.",
+        "changed_since_previous_scan": false,
+        "bull_case": "Subscriber economics, free-cash-flow growth, capital returns and a comparatively low forward valuation can support upside.",
+        "bear_case": "Wireless competition, elevated leverage and emerging satellite or alternative-network competition could limit multiple expansion.",
+        "key_assumption": "T-Mobile continues producing durable subscriber economics and expanding free cash flow."
+      },
+      "fundamentals": {
+        "valuation_status": "reasonable",
+        "revenue_trend": "growing",
+        "earnings_trend": "growing",
+        "margin_trend": "stable",
+        "debt_status": "unknown",
+        "free_cash_flow_trend": "growing"
+      },
+      "analysts": {
+        "consensus": "buy",
+        "buy": null,
+        "hold": null,
+        "sell": null,
+        "average_price_target": 241.22,
+        "median_price_target": null,
+        "high_price_target": null,
+        "low_price_target": null,
+        "upside_to_average_target_pct": 33.68,
+        "recent_direction": "stable"
+      },
+      "technicals": {
+        "trend": "stable",
+        "momentum": "mixed",
+        "relative_strength": "neutral",
+        "notes": "Closed at $180.44, down 0.51%. Relative volume was about 0.70 with 3.68M shares traded versus 5.22M average. RSI was 49.4; the stock remains below its 200-day average despite recent stabilization."
+      },
+      "catalysts": [
+        {
+          "id": "tmus_fcf_capital_returns",
+          "type": "capital_return",
+          "title": "Free-cash-flow and capital-return support",
+          "description": "A forward P/E around 13 and P/FCF around 12 leave room for shareholder returns if operating performance remains intact.",
+          "impact": 2,
+          "time_horizon": "medium_term"
+        }
+      ],
+      "risks": [
+        {
+          "id": "tmus_wireless_competition",
+          "type": "industry",
+          "title": "Wireless and alternative-network competition",
+          "description": "Traditional carrier competition remains intense while SpaceX-related wireless ambitions are increasingly being assessed by investors.",
+          "impact": 2,
+          "probability": "medium"
+        }
+      ],
+      "events": [],
+      "delta": {
+        "previous_scan_run_id": "scan_2026_08_31_market_open_manual_001",
+        "price_change_since_previous_scan_pct": null,
+        "score_change": 0,
+        "signal_changed": false,
+        "previous_signal": "HOLD",
+        "thesis_changed": false,
+        "previous_thesis_status": "unchanged",
+        "analyst_consensus_changed": false,
+        "new_risks_count": 0,
+        "resolved_risks_count": 0,
+        "new_catalysts_count": 0
+      },
+      "summary": "HOLD. Closed -0.51% on below-average volume; the defensive cash-flow thesis remains intact."
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "exchange": "NASDAQ",
+      "instrument_type": "equity",
+      "currency": "USD",
+      "price": {
+        "value": 508.75,
+        "currency": "USD",
+        "timestamp": "2026-08-31T15:51:00-04:00",
+        "previous_close": 513.53,
+        "change": -4.78,
+        "change_pct": -0.93,
+        "source": "scan"
+      },
+      "assessment": {
+        "signal": "HOLD",
+        "score": 80,
+        "confidence": 0.86,
+        "risk": "medium"
+      },
+      "thesis": {
+        "status": "unchanged",
+        "summary": "Azure, enterprise AI and Copilot remain high-quality growth engines. Today's decline does not materially alter the long-term thesis, although valuation and AI-capex returns remain important.",
+        "changed_since_previous_scan": false,
+        "bull_case": "Azure and enterprise AI monetization continue compounding revenue and earnings at above-market rates.",
+        "bear_case": "AI infrastructure spending could outpace monetization while a premium valuation amplifies downside if growth expectations soften.",
+        "key_assumption": "Enterprise AI adoption continues converting into durable cloud and software revenue."
+      },
+      "fundamentals": {
+        "valuation_status": "premium",
+        "revenue_trend": "growing",
+        "earnings_trend": "growing",
+        "margin_trend": "stable",
+        "debt_status": "healthy",
+        "free_cash_flow_trend": "growing"
+      },
+      "analysts": {
+        "consensus": "buy",
+        "buy": null,
+        "hold": null,
+        "sell": null,
+        "average_price_target": 563.92,
+        "median_price_target": null,
+        "high_price_target": null,
+        "low_price_target": null,
+        "upside_to_average_target_pct": 10.84,
+        "recent_direction": "stable"
+      },
+      "technicals": {
+        "trend": "growing",
+        "momentum": "positive",
+        "relative_strength": "strong",
+        "notes": "Closed at $508.75, down 0.93%. Volume was unusually light at about 12.7M versus 38.8M average. Shares remain roughly 17% above both the 50-day and 200-day averages, although RSI near 69 indicates momentum is already elevated."
+      },
+      "catalysts": [
+        {
+          "id": "msft_azure_copilot",
+          "type": "growth",
+          "title": "Azure and Copilot monetization",
+          "description": "Enterprise AI distribution and usage-based software monetization remain major medium- and long-term earnings drivers.",
+          "impact": 3,
+          "time_horizon": "long_term"
+        }
+      ],
+      "risks": [
+        {
+          "id": "msft_ai_capex_returns",
+          "type": "valuation",
+          "title": "Return on AI infrastructure investment",
+          "description": "The market increasingly expects very large AI infrastructure expenditures to translate into measurable incremental revenue and cash flow.",
+          "impact": 2,
+          "probability": "medium"
+        }
+      ],
+      "events": [],
+      "delta": {
+        "previous_scan_run_id": "scan_2026_08_31_market_open_manual_001",
+        "price_change_since_previous_scan_pct": null,
+        "score_change": 0,
+        "signal_changed": false,
+        "previous_signal": "HOLD",
+        "thesis_changed": false,
+        "previous_thesis_status": "unchanged",
+        "analyst_consensus_changed": false,
+        "new_risks_count": 0,
+        "resolved_risks_count": 0,
+        "new_catalysts_count": 0
+      },
+      "summary": "HOLD. The stock fell 0.93%, but the longer-term trend and fundamental growth remain strong; avoid adding aggressively after the recent run."
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple",
+      "exchange": "NASDAQ",
+      "instrument_type": "equity",
+      "currency": "USD",
+      "price": {
+        "value": 316.85,
+        "currency": "USD",
+        "timestamp": "2026-08-31T15:59:00-04:00",
+        "previous_close": 319.7,
+        "change": -2.85,
+        "change_pct": -0.89,
+        "source": "scan"
+      },
+      "assessment": {
+        "signal": "WATCH",
+        "score": 64,
+        "confidence": 0.88,
+        "risk": "medium"
+      },
+      "thesis": {
+        "status": "unchanged",
+        "summary": "Apple remains an exceptionally profitable company, but the combination of premium valuation, limited consensus-target upside and a major CEO transition keeps the risk/reward less attractive for new money.",
+        "changed_since_previous_scan": false,
+        "bull_case": "Services, ecosystem monetization, new hardware categories and stronger AI execution could restart earnings and multiple expansion.",
+        "bear_case": "Premium valuation, hardware cyclicality and execution risk during the leadership transition could constrain future returns.",
+        "key_assumption": "Apple preserves ecosystem economics and product execution under its new leadership."
+      },
+      "fundamentals": {
+        "valuation_status": "premium",
+        "revenue_trend": "growing",
+        "earnings_trend": "growing",
+        "margin_trend": "stable",
+        "debt_status": "healthy",
+        "free_cash_flow_trend": "stable"
+      },
+      "analysts": {
+        "consensus": "hold",
+        "buy": null,
+        "hold": null,
+        "sell": null,
+        "average_price_target": 333.1,
+        "median_price_target": null,
+        "high_price_target": null,
+        "low_price_target": null,
+        "upside_to_average_target_pct": 5.13,
+        "recent_direction": "stable"
+      },
+      "technicals": {
+        "trend": "stable",
+        "momentum": "mixed",
+        "relative_strength": "neutral",
+        "notes": "Closed at $316.85, down 0.89%, on about 0.70 relative volume. The stock remains above its 20-, 50- and 200-day averages, but consensus target upside is only about 5%."
+      },
+      "catalysts": [
+        {
+          "id": "aapl_ternus_transition",
+          "type": "management",
+          "title": "John Ternus becomes CEO",
+          "description": "A new CEO with deep hardware engineering experience could reshape Apple's product and AI strategy.",
+          "impact": 2,
+          "time_horizon": "medium_term"
+        },
+        {
+          "id": "aapl_new_product_cycles",
+          "type": "product",
+          "title": "Future device and AI product cycles",
+          "description": "New form factors and stronger on-device AI execution could improve replacement demand.",
+          "impact": 2,
+          "time_horizon": "medium_term"
+        }
+      ],
+      "risks": [
+        {
+          "id": "aapl_valuation",
+          "type": "valuation",
+          "title": "Premium valuation with limited target upside",
+          "description": "Apple trades around 33x forward earnings while the current share price is already close to the aggregated analyst target.",
+          "impact": 2,
+          "probability": "high"
+        },
+        {
+          "id": "aapl_management_transition",
+          "type": "industry",
+          "title": "Leadership transition execution",
+          "description": "John Ternus takes over as CEO on September 1, creating an additional execution variable at an important point in Apple's AI strategy.",
+          "impact": 2,
+          "probability": "medium"
+        }
+      ],
+      "events": [
+        {
+          "id": "aapl_ceo_transition_20260831",
+          "timestamp": "2026-08-31T20:00:00Z",
+          "type": "management",
+          "title": "Tim Cook completes final trading day as Apple CEO",
+          "summary": "John Ternus becomes Apple CEO on September 1 while Tim Cook moves to executive chairman, completing a succession plan unanimously approved by Apple's board.",
+          "impact": 1,
+          "source_name": "Apple",
+          "source_url": null,
+          "verified": true
+        }
+      ],
+      "delta": {
+        "previous_scan_run_id": "scan_2026_08_31_market_open_manual_001",
+        "price_change_since_previous_scan_pct": null,
+        "score_change": -1,
+        "signal_changed": false,
+        "previous_signal": "WATCH",
+        "thesis_changed": false,
+        "previous_thesis_status": "unchanged",
+        "analyst_consensus_changed": false,
+        "new_risks_count": 1,
+        "resolved_risks_count": 0,
+        "new_catalysts_count": 0
+      },
+      "summary": "WATCH. Apple closed -0.89%; the business remains strong, but valuation and the CEO handoff keep new-entry upside comparatively limited."
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "exchange": "NASDAQ",
+      "instrument_type": "equity",
+      "currency": "USD",
+      "price": {
+        "value": 219.97,
+        "currency": "USD",
+        "timestamp": "2026-08-31T15:46:00-04:00",
+        "previous_close": 217.55,
+        "change": 2.42,
+        "change_pct": 1.11,
+        "source": "scan"
+      },
+      "assessment": {
+        "signal": "HOLD",
+        "score": 87,
+        "confidence": 0.95,
+        "risk": "high"
+      },
+      "thesis": {
+        "status": "improving",
+        "summary": "NVIDIA showed notable relative strength in a down market, while the MediaTek partnership expands the reach of NVLink and NVIDIA's AI infrastructure ecosystem beyond standard GPU deployments.",
+        "changed_since_previous_scan": false,
+        "bull_case": "AI infrastructure investment remains enormous and NVIDIA continues extending its moat from accelerators into networking, rack-scale systems, custom silicon connectivity and software.",
+        "bear_case": "AI-capex normalization, export restrictions, competitive custom accelerators or margin compression could trigger rapid valuation compression.",
+        "key_assumption": "Global AI infrastructure spending remains elevated and NVIDIA maintains platform leadership."
+      },
+      "fundamentals": {
+        "valuation_status": "premium",
+        "revenue_trend": "strongly_growing",
+        "earnings_trend": "strongly_growing",
+        "margin_trend": "stable",
+        "debt_status": "healthy",
+        "free_cash_flow_trend": "strongly_growing"
+      },
+      "analysts": {
+        "consensus": "buy",
+        "buy": null,
+        "hold": null,
+        "sell": null,
+        "average_price_target": 334.67,
+        "median_price_target": null,
+        "high_price_target": null,
+        "low_price_target": null,
+        "upside_to_average_target_pct": 52.14,
+        "recent_direction": "improving"
+      },
+      "technicals": {
+        "trend": "growing",
+        "momentum": "positive",
+        "relative_strength": "strong",
+        "notes": "NVDA closed at $219.97, up 1.11% while major indices declined. It remains above its 20-, 50- and 200-day moving averages; volume was about 0.60 of normal after the recent post-earnings rally."
+      },
+      "catalysts": [
+        {
+          "id": "nvda_mediatek_nvlink",
+          "type": "partnership",
+          "title": "Expanded NVIDIA-MediaTek partnership",
+          "description": "MediaTek will adopt NVLink Fusion for custom XPU infrastructure while the companies deepen collaboration across cloud AI, local AI and automotive.",
+          "impact": 3,
+          "time_horizon": "medium_term"
+        },
+        {
+          "id": "nvda_next_architecture",
+          "type": "product",
+          "title": "Next-generation AI platform cycle",
+          "description": "Continued architecture and rack-scale platform upgrades can sustain demand as hyperscalers increase compute density.",
+          "impact": 3,
+          "time_horizon": "medium_term"
+        }
+      ],
+      "risks": [
+        {
+          "id": "nvda_capex_cycle",
+          "type": "industry_cycle",
+          "title": "AI infrastructure capex normalization",
+          "description": "NVIDIA remains highly sensitive to any slowdown in hyperscaler and frontier-model infrastructure spending.",
+          "impact": 3,
+          "probability": "medium"
+        },
+        {
+          "id": "nvda_valuation_concentration",
+          "type": "market",
+          "title": "Valuation and portfolio concentration",
+          "description": "Strong expectations and growing index concentration can magnify downside during broad AI multiple compression.",
+          "impact": 2,
+          "probability": "high"
+        }
+      ],
+      "events": [
+        {
+          "id": "nvda_mediatek_20260831",
+          "timestamp": "2026-08-31T12:35:00Z",
+          "type": "partnership",
+          "title": "NVIDIA deepens MediaTek AI partnership",
+          "summary": "MediaTek will adopt NVLink Fusion and NVIDIA invested $3.5 billion in MediaTek convertible bonds, expanding cooperation across AI factories, local AI and automotive.",
+          "impact": 2,
+          "source_name": "NVIDIA",
+          "source_url": null,
+          "verified": true
+        }
+      ],
+      "delta": {
+        "previous_scan_run_id": "scan_2026_08_31_market_open_manual_001",
+        "price_change_since_previous_scan_pct": null,
+        "score_change": 2,
+        "signal_changed": false,
+        "previous_signal": "HOLD",
+        "thesis_changed": false,
+        "previous_thesis_status": "improving",
+        "analyst_consensus_changed": false,
+        "new_risks_count": 0,
+        "resolved_risks_count": 0,
+        "new_catalysts_count": 0
+      },
+      "summary": "HOLD. NVDA gained 1.11% against a falling market and the MediaTek/NVLink expansion strengthens an already improving AI-platform thesis."
+    },
+    {
+      "ticker": "SKHY",
+      "name": "SK hynix",
+      "exchange": "NASDAQ",
+      "instrument_type": "equity",
+      "currency": "USD",
+      "price": {
+        "value": 164.35,
+        "currency": "USD",
+        "timestamp": "2026-08-31T15:53:00-04:00",
+        "previous_close": 161.04,
+        "change": 3.31,
+        "change_pct": 2.05,
+        "source": "scan"
+      },
+      "assessment": {
+        "signal": "WATCH",
+        "score": 82,
+        "confidence": 0.93,
+        "risk": "very_high"
+      },
+      "thesis": {
+        "status": "improving",
+        "summary": "The HBM and AI-memory thesis remains exceptionally strong, and today's 2.05% gain during a weak market reinforces momentum. The relatively new US ADR and memory-cycle volatility still argue for disciplined entries.",
+        "changed_since_previous_scan": true,
+        "bull_case": "HBM leadership, AI-memory shortages and new packaging capacity can sustain extraordinary revenue and earnings growth.",
+        "bear_case": "Memory cyclicality, ADR-specific volatility, valuation-model disagreement and stronger competitive supply could create substantial drawdowns.",
+        "key_assumption": "HBM demand remains structurally strong and SK hynix retains technological and manufacturing leadership."
+      },
+      "fundamentals": {
+        "valuation_status": "reasonable",
+        "revenue_trend": "strongly_growing",
+        "earnings_trend": "strongly_growing",
+        "margin_trend": "improving",
+        "debt_status": "healthy",
+        "free_cash_flow_trend": "growing"
+      },
+      "analysts": {
+        "consensus": "buy",
+        "buy": null,
+        "hold": null,
+        "sell": null,
+        "average_price_target": 253.0,
+        "median_price_target": null,
+        "high_price_target": null,
+        "low_price_target": null,
+        "upside_to_average_target_pct": 53.94,
+        "recent_direction": "improving"
+      },
+      "technicals": {
+        "trend": "growing",
+        "momentum": "positive",
+        "relative_strength": "strong",
+        "notes": "Closed at $164.35, up 2.05%. Shares are above the 20-, 50- and 200-day averages, although relative volume was only 0.28 and short trading history makes the technical sample less robust."
+      },
+      "catalysts": [
+        {
+          "id": "skhy_hbm_demand",
+          "type": "demand",
+          "title": "HBM and AI-memory demand",
+          "description": "Rapid expansion of accelerator clusters continues increasing demand for high-bandwidth memory.",
+          "impact": 3,
+          "time_horizon": "long_term"
+        },
+        {
+          "id": "skhy_indiana_hbm",
+          "type": "growth",
+          "title": "Indiana HBM packaging and AI R&D hub",
+          "description": "SK hynix has broken ground on a roughly $4 billion Indiana HBM packaging and AI-chip R&D project, adding geographic and capacity diversification.",
+          "impact": 2,
+          "time_horizon": "long_term"
+        }
+      ],
+      "risks": [
+        {
+          "id": "skhy_adr_volatility",
+          "type": "valuation",
+          "title": "New ADR valuation and trading-history risk",
+          "description": "The US-listed ADR has a short trading history and can diverge from simple valuation comparisons with the Korean primary listing.",
+          "impact": 3,
+          "probability": "high"
+        },
+        {
+          "id": "skhy_memory_cycle",
+          "type": "industry_cycle",
+          "title": "Memory-cycle reversal",
+          "description": "Memory pricing and supply-demand balances historically change rapidly once capacity catches demand.",
+          "impact": 3,
+          "probability": "medium"
+        }
+      ],
+      "events": [
+        {
+          "id": "skhy_analyst_targets_20260831",
+          "timestamp": "2026-08-31T12:00:00Z",
+          "type": "other",
+          "title": "Wall Street targets remain strongly bullish",
+          "summary": "A fresh Zacks aggregation reported that average Wall Street targets imply roughly 53.6% upside for the SKHY ADR. Target-based upside is not a guarantee of fair value.",
+          "impact": 1,
+          "source_name": "Zacks",
+          "source_url": null,
+          "verified": true
+        }
+      ],
+      "delta": {
+        "previous_scan_run_id": "scan_2026_08_31_market_open_manual_001",
+        "price_change_since_previous_scan_pct": null,
+        "score_change": 3,
+        "signal_changed": false,
+        "previous_signal": "WATCH",
+        "thesis_changed": true,
+        "previous_thesis_status": "unchanged",
+        "analyst_consensus_changed": false,
+        "new_risks_count": 0,
+        "resolved_risks_count": 0,
+        "new_catalysts_count": 0
+      },
+      "summary": "WATCH for additional buying. SKHY gained 2.05% and fundamentals remain exceptional, but ADR and memory-cycle volatility justify a high entry-discipline threshold."
+    },
+    {
+      "ticker": "SGM",
+      "name": "STMicroelectronics",
+      "exchange": "EURONEXT_PARIS",
+      "instrument_type": "equity",
+      "currency": "EUR",
+      "price": {
+        "value": null,
+        "currency": "EUR",
+        "timestamp": null,
+        "previous_close": null,
+        "change": null,
+        "change_pct": null,
+        "source": "unknown"
+      },
+      "assessment": {
+        "signal": "HOLD",
+        "score": 77,
+        "confidence": 0.82,
+        "risk": "high"
+      },
+      "thesis": {
+        "status": "improving",
+        "summary": "STMicroelectronics remains a useful diversified semiconductor exposure outside the most crowded hyperscale-AI names. Recent buybacks and improving quarterly growth support the recovery thesis, although automotive and industrial cyclicality remain material.",
+        "changed_since_previous_scan": false,
+        "bull_case": "Automotive, industrial, power semiconductors and Edge AI provide multiple recovery paths while capital returns support shareholders.",
+        "bear_case": "Weak automotive or industrial demand and lower factory utilization could postpone margin normalization.",
+        "key_assumption": "Automotive and industrial semiconductor demand gradually improves while ST protects its balance sheet."
+      },
+      "fundamentals": {
+        "valuation_status": "reasonable",
+        "revenue_trend": "growing",
+        "earnings_trend": "unknown",
+        "margin_trend": "unknown",
+        "debt_status": "healthy",
+        "free_cash_flow_trend": "unknown"
+      },
+      "analysts": {
+        "consensus": "buy",
+        "buy": null,
+        "hold": null,
+        "sell": null,
+        "average_price_target": null,
+        "median_price_target": null,
+        "high_price_target": null,
+        "low_price_target": null,
+        "upside_to_average_target_pct": null,
+        "recent_direction": "stable"
+      },
+      "technicals": {
+        "trend": "unknown",
+        "momentum": "positive",
+        "relative_strength": "unknown",
+        "notes": "A reliable Euronext Paris close for the user-mapped SGM instrument was not available. As a directional proxy only, NYSE-listed STM closed at $50.15, up 1.55%, on about 0.54 relative volume."
+      },
+      "catalysts": [
+        {
+          "id": "stm_buyback",
+          "type": "capital_return",
+          "title": "Ongoing share-repurchase program",
+          "description": "ST disclosed additional common-share purchases under its existing repurchase program.",
+          "impact": 1,
+          "time_horizon": "short_term"
+        },
+        {
+          "id": "stm_edge_ai",
+          "type": "product",
+          "title": "Edge AI and power semiconductor exposure",
+          "description": "ST's diversified product base creates optionality from Edge AI, automotive electrification and industrial power demand.",
+          "impact": 2,
+          "time_horizon": "long_term"
+        }
+      ],
+      "risks": [
+        {
+          "id": "stm_auto_industrial_cycle",
+          "type": "industry_cycle",
+          "title": "Automotive and industrial semiconductor cycle",
+          "description": "A slower recovery in these end markets could keep utilization and margins below normalized levels.",
+          "impact": 2,
+          "probability": "medium"
+        }
+      ],
+      "events": [
+        {
+          "id": "stm_buyback_20260831",
+          "timestamp": "2026-08-31T12:00:00Z",
+          "type": "other",
+          "title": "STMicroelectronics reports latest buyback transactions",
+          "summary": "ST disclosed repurchases of 128,904 shares during August 24-25 for approximately €5.5 million under its common-share repurchase program.",
+          "impact": 1,
+          "source_name": "STMicroelectronics",
+          "source_url": null,
+          "verified": true
+        }
+      ],
+      "delta": {
+        "previous_scan_run_id": "scan_2026_08_31_market_open_manual_001",
+        "price_change_since_previous_scan_pct": null,
+        "score_change": 2,
+        "signal_changed": false,
+        "previous_signal": "HOLD",
+        "thesis_changed": false,
+        "previous_thesis_status": "improving",
+        "analyst_consensus_changed": false,
+        "new_risks_count": 0,
+        "resolved_risks_count": 0,
+        "new_catalysts_count": 0
+      },
+      "summary": "HOLD. The recovery thesis improved modestly; the NYSE proxy gained 1.55% and the latest buyback adds incremental support, but the primary EUR quote remains unavailable."
+    }
+  ],
+  "opportunities": [
+    {
+      "ticker": "PWR",
+      "name": "Quanta Services",
+      "exchange": "NYSE",
+      "price": 606.66,
+      "signal": "WATCH",
+      "score": 89,
+      "confidence": 0.94,
+      "risk": "medium",
+      "category": "quality",
+      "theme": "ai_power_infrastructure",
+      "reason": "Quanta is one of the clearest picks-and-shovels plays on the electricity bottleneck because it builds and services grid, generation, substations, switchgear and data-center/load-center infrastructure. Q2 backlog reached a record $53.4B and management explicitly cited accelerating investment in grid, power generation and mission-critical infrastructure. The stock closed +0.66% in a down market and sits about 23% below its 52-week high.",
+      "potential_catalysts": [
+        "Record $53.4B backlog conversion",
+        "Transmission and substation investment",
+        "Data-center and load-center electrical infrastructure",
+        "Domestic high-voltage circuit-breaker manufacturing",
+        "Power-generation construction demand",
+        "Acquisition synergies and expanded switchgear capabilities"
+      ],
+      "major_risks": [
+        "Premium absolute valuation",
+        "Large-project execution risk",
+        "Labor availability",
+        "Permitting delays",
+        "Acquisition integration",
+        "Interest-rate sensitivity"
+      ]
+    },
+    {
+      "ticker": "ETN",
+      "name": "Eaton",
+      "exchange": "NYSE",
+      "price": 401.55,
+      "signal": "WATCH",
+      "score": 87,
+      "confidence": 0.93,
+      "risk": "medium",
+      "category": "quality",
+      "theme": "ai_power_infrastructure",
+      "reason": "Eaton gives diversified exposure to the grid-to-rack electrical bottleneck through switchgear, power management, utility equipment and data-center systems. Q2 Electrical Americas rolling orders grew 41% organically and electrical backlog growth remained very strong. At $401.55 the stock is about 16% below its 52-week high, improving entry conditions without removing valuation risk.",
+      "potential_catalysts": [
+        "Data-center electrical demand",
+        "Electrical Americas backlog conversion",
+        "Grid modernization spending",
+        "Higher rack power density",
+        "Power and thermal integration",
+        "Utility and industrial electrification"
+      ],
+      "major_risks": [
+        "Premium forward valuation",
+        "Order-growth normalization",
+        "AI data-center spending slowdown",
+        "Industrial cyclicality",
+        "Higher interest rates"
+      ]
+    },
+    {
+      "ticker": "GEV",
+      "name": "GE Vernova",
+      "exchange": "NYSE",
+      "price": 896.44,
+      "signal": "WATCH",
+      "score": 88,
+      "confidence": 0.92,
+      "risk": "high",
+      "category": "growth",
+      "theme": "ai_power_infrastructure",
+      "reason": "GE Vernova provides direct exposure to two of AI's hardest physical constraints: new power generation and grid equipment. The stock has corrected roughly 25% from its 52-week high, creating a more attractive setup if turbine and electrification demand stays strong, but today's 1.70% decline and high expectations make staged entries preferable.",
+      "potential_catalysts": [
+        "Gas-turbine demand for new generation",
+        "Hyperscale data-center power contracts",
+        "Grid equipment investment",
+        "Transmission capacity expansion",
+        "Backlog conversion",
+        "Rising electricity demand"
+      ],
+      "major_risks": [
+        "High valuation expectations",
+        "Execution against large project pipeline",
+        "Gas-turbine capacity competition",
+        "High stock volatility",
+        "Power-project permitting delays",
+        "Potential earnings misses despite strong revenue demand"
+      ]
+    }
+  ],
+  "meta": {
+    "sources_used": [
+      "Associated Press market close, August 31, 2026",
+      "Finviz TMUS market data",
+      "Finviz MSFT market data",
+      "Finviz AAPL market data",
+      "Apple leadership succession announcement",
+      "Finviz NVDA market data",
+      "NVIDIA-MediaTek partnership announcement",
+      "Finviz SKHY market data",
+      "Zacks SKHY analyst target aggregation",
+      "Finviz STM proxy market data",
+      "STMicroelectronics repurchase disclosure",
+      "Eaton Q2 2026 results",
+      "Finviz ETN market data",
+      "Finviz GEV market data",
+      "Quanta Services Q2 2026 results",
+      "Finviz PWR market data"
+    ],
+    "warnings": [
+      "Finviz quotes are delayed by approximately one minute; values labeled Last Close are treated as end-of-session prices.",
+      "The prior market_open scan did not contain reliable same-day opening prices for all portfolio holdings, so delta.price_change_since_previous_scan_pct remains null rather than mixing stale and live quotes.",
+      "No reliable Euronext Paris closing quote was obtained for the user-mapped SGM instrument; NYSE STM is used only as a directional proxy in technical notes.",
+      "SKHY is a relatively new US ADR with limited trading history; ADR valuation and analyst-target comparisons should not automatically be mapped one-for-one to the Korean primary listing.",
+      "Opportunity signals are analytical classifications and not automatic trading instructions."
+    ],
+    "generated_for": "portfolio_monitor"
+  }
+}

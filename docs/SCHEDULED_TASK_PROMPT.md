@@ -15,7 +15,7 @@ risk: low | medium | high | very_high
 run_type: morning | market_open | market_close
 market_summary.sentiment: very_bearish | bearish | neutral | bullish | very_bullish
 
-Include one portfolio snapshot for every current symbol. Include price with source "scan" only when a reliable timestamped price is available; otherwise use null. Signal must not be derived mechanically from score. Confidence represents evidence quality, not probability of price appreciation.
+Include one portfolio snapshot for every current symbol. Include price only when a reliable timestamped value is available; otherwise use null. Set source to "finviz" for prices obtained from Finviz, "stockanalysis" for prices obtained from StockAnalysis, "scan" for another scan source, "market_data" for the app market-data provider, and "unknown" when no source is known. Use null for an event timestamp when no reliable date is available. Signal must not be derived mechanically from score. Confidence represents evidence quality, not probability of price appreciation.
 
 For each factual event, include a direct source URL when available. Distinguish new evidence from facts repeated since the previous scan. Populate delta relative to the preceding scan when that scan is available.
 

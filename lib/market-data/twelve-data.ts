@@ -47,6 +47,7 @@ export class TwelveDataProvider implements MarketDataProvider {
 
     const response = await fetch(url, {
       next: { revalidate: interval === '1day' ? 3600 : 300 },
+      signal: AbortSignal.timeout(8_000),
     });
     if (!response.ok)
       throw new Error(`Twelve Data request failed (${response.status})`);
@@ -71,7 +72,10 @@ export class TwelveDataProvider implements MarketDataProvider {
     url.searchParams.set('symbol', symbol.toUpperCase());
     url.searchParams.set('apikey', this.apiKey);
 
-    const response = await fetch(url, { cache: 'no-store' });
+    const response = await fetch(url, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8_000),
+    });
     if (!response.ok)
       throw new Error(`Twelve Data request failed (${response.status})`);
     const data = (await response.json()) as TwelveDataQuoteResponse;

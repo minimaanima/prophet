@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { MobileNavigationMenu } from '@/components/mobile-navigation-menu';
 import {
   Command,
   CommandDialog,
@@ -251,12 +252,12 @@ export function ProphetDashboard() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-20 border-b border-white/8 bg-background/85 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-[1500px] items-center gap-5 px-4 sm:px-7">
+        <div className="mx-auto flex h-16 max-w-[1500px] items-center gap-2 px-4 sm:gap-5 sm:px-7">
           <div className="flex items-center gap-2.5">
             <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[0_0_30px_rgba(121,255,194,.18)]">
               <Activity className="size-4" />
             </span>
-            <span className="font-mono text-sm font-semibold tracking-[0.18em]">
+            <span className="hidden font-mono text-sm font-semibold tracking-[0.18em] min-[430px]:inline">
               PROPHET
             </span>
           </div>
@@ -275,18 +276,19 @@ export function ProphetDashboard() {
             <Button
               variant="ghost"
               size="icon"
+              className="hidden sm:inline-flex"
               aria-label="Search portfolio"
               onClick={() => setSearchOpen(true)}
             >
               <Search />
             </Button>
             <Button
-              className="ml-1"
               size="lg"
               onClick={() => setImportOpen(true)}
             >
               <Import data-icon="inline-start" /> Import scan
             </Button>
+            <MobileNavigationMenu active="overview" />
           </div>
         </div>
       </header>
@@ -579,7 +581,7 @@ export function ProphetDashboard() {
                   setImportState({ kind: 'idle' });
                 }}
                 placeholder="Paste the JSON-only scan response here…"
-                className="min-h-[300px] resize-y border-white/10 bg-black/20 font-mono text-xs leading-relaxed sm:min-h-[420px]"
+                className="field-sizing-fixed h-[42dvh] min-h-[260px] max-h-[520px] resize-none overflow-y-auto overscroll-contain border-white/10 bg-black/20 font-mono text-xs leading-relaxed sm:h-[min(56vh,520px)] sm:min-h-[360px]"
               />
               <div className="space-y-3">
                 <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 px-3 py-4 text-xs text-muted-foreground transition hover:border-primary/50 hover:text-white">
