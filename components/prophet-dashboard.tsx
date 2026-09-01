@@ -206,7 +206,9 @@ export function ProphetDashboard() {
 
     const response = await fetch('/api/scans', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+      },
       body: importText,
     });
     const result = (await response.json()) as {
@@ -214,11 +216,14 @@ export function ProphetDashboard() {
       scan?: Scan;
       importedAt?: string;
       errors?: Array<{ path: string; message: string }>;
+      error?: string;
     };
     if (!response.ok || !result.ok || !result.scan) {
       setImportState({
         kind: 'error',
-        errors: result.errors ?? [{ path: 'root', message: 'Import failed' }],
+        errors: result.errors ?? [
+          { path: 'root', message: result.error ?? 'Import failed' },
+        ],
       });
       return;
     }

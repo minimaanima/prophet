@@ -4,7 +4,7 @@ Personal portfolio intelligence dashboard. Prophet combines authoritative market
 
 ## Local setup
 
-1. Copy `.env.example` to `.env.local` and add a Twelve Data API key when available.
+1. Copy `.env.example` to `.env.local`, and add a Twelve Data API key when available.
 2. Run `npm run dev`.
 3. Open the dashboard and use **Import scan** to paste or upload JSON.
 
