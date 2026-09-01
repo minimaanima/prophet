@@ -553,7 +553,7 @@ export function ProphetDashboard() {
       </CommandDialog>
 
       <Dialog open={importOpen} onOpenChange={setImportOpen}>
-        <DialogContent className="max-h-[88vh] max-w-3xl overflow-hidden border border-white/10 bg-[#111923] p-0 shadow-2xl">
+        <DialogContent className="grid max-h-[calc(100dvh-2rem)] max-w-3xl grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden border border-white/10 bg-[#111923] p-0 shadow-2xl">
           <DialogHeader className="border-b border-white/8 px-5 py-4">
             <DialogTitle className="flex items-center gap-2">
               <FileJson className="size-4 text-primary" />
@@ -564,73 +564,75 @@ export function ProphetDashboard() {
               Nothing is sent outside this application.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid min-h-0 gap-4 px-5 sm:grid-cols-[minmax(0,1fr)_220px]">
-            <Textarea
-              aria-label="Scan JSON"
-              value={importText}
-              onChange={(event) => {
-                setImportText(event.target.value);
-                setImportState({ kind: 'idle' });
-              }}
-              placeholder="Paste the JSON-only scan response here…"
-              className="min-h-[420px] resize-none border-white/10 bg-black/20 font-mono text-xs leading-relaxed"
-            />
-            <div className="space-y-3">
-              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 px-3 py-4 text-xs text-muted-foreground transition hover:border-primary/50 hover:text-white">
-                <FileJson className="size-4" /> Choose .json file
-                <input
-                  type="file"
-                  accept="application/json,.json"
-                  className="sr-only"
-                  onChange={(event) => {
-                    const file = event.target.files?.[0];
-                    if (file)
-                      void file.text().then((text) => {
-                        setImportText(text);
-                        setImportState({ kind: 'idle' });
-                      });
-                  }}
-                />
-              </label>
-              {importState.kind === 'success' && (
-                <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/8 p-3 text-xs text-emerald-200">
-                  <div className="flex items-center gap-2 font-medium">
-                    <CheckCircle2 className="size-4" />
-                    Import complete
+          <div className="min-h-0 overflow-y-auto overscroll-contain px-5 py-4">
+            <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_220px]">
+              <Textarea
+                aria-label="Scan JSON"
+                value={importText}
+                onChange={(event) => {
+                  setImportText(event.target.value);
+                  setImportState({ kind: 'idle' });
+                }}
+                placeholder="Paste the JSON-only scan response here…"
+                className="min-h-[300px] resize-y border-white/10 bg-black/20 font-mono text-xs leading-relaxed sm:min-h-[420px]"
+              />
+              <div className="space-y-3">
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 px-3 py-4 text-xs text-muted-foreground transition hover:border-primary/50 hover:text-white">
+                  <FileJson className="size-4" /> Choose .json file
+                  <input
+                    type="file"
+                    accept="application/json,.json"
+                    className="sr-only"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      if (file)
+                        void file.text().then((text) => {
+                          setImportText(text);
+                          setImportState({ kind: 'idle' });
+                        });
+                    }}
+                  />
+                </label>
+                {importState.kind === 'success' && (
+                  <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/8 p-3 text-xs text-emerald-200">
+                    <div className="flex items-center gap-2 font-medium">
+                      <CheckCircle2 className="size-4" />
+                      Import complete
+                    </div>
+                    <p className="mt-1 text-emerald-200/70">
+                      {importState.message}
+                    </p>
                   </div>
-                  <p className="mt-1 text-emerald-200/70">
-                    {importState.message}
-                  </p>
-                </div>
-              )}
-              {importState.kind === 'error' && (
-                <div className="max-h-72 overflow-auto rounded-lg border border-rose-400/20 bg-rose-400/8 p-3 text-xs text-rose-200">
-                  <div className="mb-2 flex items-center gap-2 font-medium">
-                    <AlertCircle className="size-4" />
-                    Validation failed
+                )}
+                {importState.kind === 'error' && (
+                  <div className="max-h-72 overflow-auto rounded-lg border border-rose-400/20 bg-rose-400/8 p-3 text-xs text-rose-200">
+                    <div className="mb-2 flex items-center gap-2 font-medium">
+                      <AlertCircle className="size-4" />
+                      Validation failed
+                    </div>
+                    <ul className="space-y-2">
+                      {importState.errors?.slice(0, 12).map((error, index) => (
+                        <li key={`${error.path}-${index}`}>
+                          <span className="font-mono text-rose-100">
+                            {error.path}
+                          </span>
+                          <br />
+                          <span className="text-rose-200/70">
+                            {error.message}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-2">
-                    {importState.errors?.slice(0, 12).map((error, index) => (
-                      <li key={`${error.path}-${index}`}>
-                        <span className="font-mono text-rose-100">
-                          {error.path}
-                        </span>
-                        <br />
-                        <span className="text-rose-200/70">
-                          {error.message}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                )}
+                <div className="rounded-lg border border-white/8 bg-white/[.025] p-3 text-[11px] leading-relaxed text-muted-foreground">
+                  Schema v1 requires strict signal, risk, thesis and run-type
+                  enums. Invalid responses are retained for troubleshooting.
                 </div>
-              )}
-              <div className="rounded-lg border border-white/8 bg-white/[.025] p-3 text-[11px] leading-relaxed text-muted-foreground">
-                Schema v1 requires strict signal, risk, thesis and run-type
-                enums. Invalid responses are retained for troubleshooting.
               </div>
             </div>
           </div>
-          <DialogFooter className="border-white/8 bg-white/[.025]">
+          <DialogFooter className="mx-0 mb-0 shrink-0 rounded-none rounded-b-xl border-white/8 bg-white/[.025]">
             <Button variant="outline" onClick={() => setImportOpen(false)}>
               Close
             </Button>
