@@ -13,8 +13,19 @@ const PriceSourceSchema = z.preprocess((value) => {
   const normalized = value.trim().toLowerCase();
   if (normalized === 'stockanalysis' || normalized === 'stock analysis')
     return 'stockanalysis';
+  if (normalized === 'marketscreener' || normalized === 'market screener')
+    return 'marketscreener';
   return normalized;
-}, z.enum(['market_data', 'finviz', 'stockanalysis', 'scan', 'unknown']));
+},
+  z.enum([
+    'market_data',
+    'finviz',
+    'stockanalysis',
+    'marketscreener',
+    'scan',
+    'unknown',
+  ]),
+);
 const CurrencySchema = z.union([
   z
     .string()

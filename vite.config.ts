@@ -47,6 +47,8 @@ export default defineConfig(async () => {
   return {
     css: { postcss: { plugins: [tailwindcss()] } },
     server: {
+      host: '127.0.0.1',
+      port: 3000,
       allowedHosts: ['ubuntu-4gb-nbg1-1.tail6dd110.ts.net'],
       ...(isCodexSeatbeltSandbox
         ? { watch: { useFsEvents: false, usePolling: true } }

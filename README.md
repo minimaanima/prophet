@@ -4,11 +4,11 @@ Personal portfolio intelligence dashboard. Prophet combines authoritative market
 
 ## Local setup
 
-1. Copy `.env.example` to `.env.local`, and add a Twelve Data API key when available.
+1. Copy `.env.example` to `.env`. Add a Twelve Data key for prices and set `SEC_USER_AGENT` to an application name plus your contact email for free reported fundamentals.
 2. Run `npm run dev`.
 3. Open the dashboard and use **Import scan** to paste or upload JSON.
 
-The app works without a market-data key using preview chart data. Imported scans are validated against schema v1 and saved to the configured D1 database.
+The app works without a market-data key using preview chart data. SEC fundamentals require no API key, but the SEC requires a declared contact identity. Imported scans and cached fundamentals are saved to the configured D1 database.
 
 ## Commands
 

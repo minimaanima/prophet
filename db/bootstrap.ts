@@ -39,6 +39,10 @@ export async function ensureDatabase() {
       ticker TEXT PRIMARY KEY, refresh_slot TEXT NOT NULL, last_error TEXT,
       attempted_at TEXT NOT NULL
     )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS company_fundamentals_cache (
+      ticker TEXT PRIMARY KEY, cik TEXT, status TEXT NOT NULL,
+      data_json TEXT, last_error TEXT, fetched_at TEXT NOT NULL
+    )`),
     db.prepare(
       'CREATE INDEX IF NOT EXISTS idx_scan_runs_generated_at ON scan_runs(generated_at)',
     ),

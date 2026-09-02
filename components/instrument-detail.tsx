@@ -7,11 +7,15 @@ import {
   ArrowLeft,
   ArrowUpRight,
   BrainCircuit,
+  Building2,
   CalendarDays,
   ChartCandlestick,
   ChartLine,
+  CircleGauge,
   Database,
   ExternalLink,
+  Minus,
+  RefreshCw,
   ShieldAlert,
   Sparkles,
 } from 'lucide-react';
@@ -37,6 +41,11 @@ import {
 import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
 import { fetchMarketQuotes } from '@/lib/market-data/client';
 import type { MarketQuote, PricePoint } from '@/lib/market-data/provider';
+import type {
+  FundamentalMetric,
+  FundamentalsApiResponse,
+  PerformanceStatus,
+} from '@/lib/fundamentals/types';
 import type { PortfolioSnapshot } from '@/lib/scan-schema';
 
 type ChartPoint = {
@@ -80,10 +89,20 @@ const signalClass: Record<string, string> = {
   EXIT: 'border-rose-400/20 bg-rose-400/10 text-rose-300',
 };
 
+const performanceStatusClass: Record<PerformanceStatus, string> = {
+  improving: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300',
+  stable: 'border-sky-400/20 bg-sky-400/10 text-sky-300',
+  deteriorating: 'border-rose-400/20 bg-rose-400/10 text-rose-300',
+  insufficient: 'border-white/10 bg-white/5 text-muted-foreground',
+};
+
 export function InstrumentDetail({ ticker }: { ticker: string }) {
   const [instrument, setInstrument] = useState<InstrumentResponse | null>(null);
   const [marketPoints, setMarketPoints] = useState<PricePoint[]>([]);
   const [quote, setQuote] = useState<MarketQuote | null>(null);
+  const [fundamentals, setFundamentals] =
+    useState<FundamentalsApiResponse | null>(null);
+  const [fundamentalsLoading, setFundamentalsLoading] = useState(true);
   const [chartMode, setChartMode] = useState<'line' | 'candles'>('candles');
   const [showMovingAverages, setShowMovingAverages] = useState(true);
   const [providerConfigured, setProviderConfigured] = useState<boolean | null>(
@@ -122,11 +141,12 @@ export function InstrumentDetail({ ticker }: { ticker: string }) {
       });
 
     void fetch('/api/market/' + encodeURIComponent(ticker))
-      .then(async (response) =>
-        (await response.json()) as {
-          configured?: boolean;
-          points?: PricePoint[];
-        },
+      .then(
+        async (response) =>
+          (await response.json()) as {
+            configured?: boolean;
+            points?: PricePoint[];
+          },
       )
       .then((data) => {
         if (cancelled) return;
@@ -146,6 +166,33 @@ export function InstrumentDetail({ ticker }: { ticker: string }) {
       })
       .catch(() => {
         if (!cancelled) setQuote(null);
+      });
+
+    setFundamentalsLoading(true);
+    setFundamentals(null);
+    void fetch('/api/fundamentals/' + encodeURIComponent(ticker))
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Unable to load SEC fundamentals');
+        return (await response.json()) as FundamentalsApiResponse;
+      })
+      .then((data) => {
+        if (!cancelled) setFundamentals(data);
+      })
+      .catch((reason: unknown) => {
+        if (!cancelled) {
+          setFundamentals({
+            configured: true,
+            available: false,
+            cached: false,
+            error:
+              reason instanceof Error
+                ? reason.message
+                : 'Unable to load SEC fundamentals',
+          });
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setFundamentalsLoading(false);
       });
 
     return () => {
@@ -246,6 +293,11 @@ export function InstrumentDetail({ ticker }: { ticker: string }) {
             <DayChange value={day} />
           </div>
         </section>
+
+        <CompanyPerformance
+          loading={fundamentalsLoading}
+          response={fundamentals}
+        />
 
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_330px]">
           <div className="space-y-5">
@@ -557,6 +609,198 @@ export function InstrumentDetail({ ticker }: { ticker: string }) {
       </div>
     </main>
   );
+}
+
+function CompanyPerformance({
+  loading,
+  response,
+}: {
+  loading: boolean;
+  response: FundamentalsApiResponse | null;
+}) {
+  if (loading) {
+    return (
+      <Card className="mb-5 border border-white/8 bg-card/80 ring-0">
+        <CardContent className="flex min-h-36 items-center justify-center gap-2 text-sm text-muted-foreground">
+          <RefreshCw className="size-4 animate-spin text-primary" />
+          Loading reported company performance…
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const data = response?.fundamentals;
+  if (!response?.available || !data) {
+    const needsContact = response?.configured === false;
+    return (
+      <Card className="mb-5 border border-white/8 bg-card/80 ring-0">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="size-4 text-primary" />
+            Company performance
+          </CardTitle>
+          <CardDescription>
+            Free reported fundamentals from official SEC filings.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-xl border border-dashed border-white/12 bg-white/[.02] px-4 py-5 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">
+              {needsContact
+                ? 'SEC access needs a contact identity'
+                : 'Reported fundamentals are unavailable'}
+            </p>
+            <p className="mt-1 max-w-3xl leading-relaxed">
+              {needsContact
+                ? 'Add SEC_USER_AGENT with the Prophet application name and a contact email. Prophet will not infer or transmit a local email automatically.'
+                : (response?.error ??
+                  'This ticker could not be matched to standardized SEC filing data.')}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const metrics = data.metrics.filter((metric) => metric.latest !== null);
+
+  return (
+    <Card className="mb-5 border border-primary/12 bg-card/80 ring-0">
+      <CardHeader className="gap-4 border-b border-white/8 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <CardTitle className="flex items-center gap-2">
+            <CircleGauge className="size-4 text-primary" />
+            Company performance
+          </CardTitle>
+          <CardDescription className="mt-1 max-w-3xl">
+            Reported results from SEC filings—not analyst estimates. Performance
+            and valuation should be judged separately.
+          </CardDescription>
+        </div>
+        <Badge
+          variant="outline"
+          className={performanceStatusClass[data.overallStatus]}
+        >
+          {performanceStatusIcon(data.overallStatus)}
+          {data.overallStatus}
+        </Badge>
+      </CardHeader>
+      <CardContent className="pt-5">
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">{data.summary}</p>
+          <a
+            className="inline-flex shrink-0 items-center gap-1 text-xs text-primary"
+            href={data.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            SEC filings <ExternalLink className="size-3" />
+          </a>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {metrics.map((metric) => (
+            <FundamentalMetricCard key={metric.key} metric={metric} />
+          ))}
+        </div>
+        <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+          Latest filing: {formatFundamentalDate(data.latestFilingDate)} · Cached
+          for 12 hours to respect SEC access limits
+          {response.stale
+            ? ' · showing stale data after a refresh failure'
+            : ''}
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function FundamentalMetricCard({ metric }: { metric: FundamentalMetric }) {
+  const change = formatFundamentalChange(metric);
+  return (
+    <div className="rounded-xl border border-white/8 bg-white/[.025] p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs text-muted-foreground">{metric.label}</p>
+          <p className="mt-1 font-mono text-xl font-semibold">
+            {formatFundamentalValue(metric)}
+          </p>
+        </div>
+        <Badge
+          variant="outline"
+          className={performanceStatusClass[metric.status]}
+        >
+          {performanceStatusIcon(metric.status)}
+          {metric.status}
+        </Badge>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-3 text-xs">
+        <span
+          className={
+            metric.status === 'improving'
+              ? 'text-emerald-300'
+              : metric.status === 'deteriorating'
+                ? 'text-rose-300'
+                : 'text-muted-foreground'
+          }
+        >
+          {change}
+        </span>
+        <span className="text-muted-foreground">
+          {formatFundamentalDate(metric.latestPeriod)}
+        </span>
+      </div>
+      <p className="mt-3 border-t border-white/8 pt-3 text-[11px] leading-relaxed text-muted-foreground">
+        {metric.description}
+      </p>
+    </div>
+  );
+}
+
+function performanceStatusIcon(status: PerformanceStatus) {
+  if (status === 'improving') return <ArrowUpRight />;
+  if (status === 'deteriorating') return <ArrowDownRight />;
+  return <Minus />;
+}
+
+function formatFundamentalValue(metric: FundamentalMetric) {
+  if (metric.latest === null) return '—';
+  if (metric.unit === 'percent') return metric.latest.toFixed(1) + '%';
+  if (metric.unit === 'per_share') {
+    return (
+      (metric.currency ? metric.currency + ' ' : '') + metric.latest.toFixed(2)
+    );
+  }
+
+  const compact = new Intl.NumberFormat('en', {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(metric.latest);
+  return metric.unit === 'currency' && metric.currency
+    ? metric.currency + ' ' + compact
+    : compact;
+}
+
+function formatFundamentalChange(metric: FundamentalMetric) {
+  if (metric.prior === null) return 'No comparable prior period';
+  if (metric.unit === 'percent' && metric.changeAbsolute !== null) {
+    const value = metric.changeAbsolute;
+    return (value >= 0 ? '+' : '−') + Math.abs(value).toFixed(1) + ' pp YoY';
+  }
+  if (metric.changePct === null) return 'Comparable period available';
+  const value = metric.changePct;
+  return (value >= 0 ? '+' : '−') + Math.abs(value).toFixed(1) + '% YoY';
+}
+
+function formatFundamentalDate(value: string | null) {
+  if (!value) return 'date unavailable';
+  return new Date(
+    value + (value.length === 10 ? 'T00:00:00Z' : ''),
+  ).toLocaleDateString('en-GB', {
+    timeZone: 'Europe/Sofia',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
 }
 
 function Candlestick({

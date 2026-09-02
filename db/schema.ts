@@ -105,3 +105,15 @@ export const marketQuoteAttempts = sqliteTable('market_quote_attempts', {
   lastError: text('last_error'),
   attemptedAt: text('attempted_at').notNull(),
 });
+
+export const companyFundamentalsCache = sqliteTable(
+  'company_fundamentals_cache',
+  {
+    ticker: text('ticker').primaryKey(),
+    cik: text('cik'),
+    status: text('status').notNull(),
+    dataJson: text('data_json'),
+    lastError: text('last_error'),
+    fetchedAt: text('fetched_at').notNull(),
+  },
+);
