@@ -8,24 +8,9 @@ export const ThesisStatusSchema = z.enum([
 ]);
 export const RiskSchema = z.enum(['low', 'medium', 'high', 'very_high']);
 export const RunTypeSchema = z.enum(['morning', 'market_open', 'market_close']);
-const PriceSourceSchema = z.preprocess((value) => {
-  if (typeof value !== 'string') return value;
-  const normalized = value.trim().toLowerCase();
-  if (normalized === 'stockanalysis' || normalized === 'stock analysis')
-    return 'stockanalysis';
-  if (normalized === 'marketscreener' || normalized === 'market screener')
-    return 'marketscreener';
-  return normalized;
-},
-  z.enum([
-    'market_data',
-    'finviz',
-    'stockanalysis',
-    'marketscreener',
-    'scan',
-    'unknown',
-  ]),
-);
+// Price provenance is descriptive metadata. Keep the supplied provider name
+// instead of rejecting a scan whenever a new market-data source is used.
+const PriceSourceSchema = z.string().trim().min(1);
 const CurrencySchema = z.union([
   z
     .string()
@@ -84,10 +69,14 @@ export const PortfolioSnapshotSchema = z.looseObject({
   thesis: z.object({
     status: ThesisStatusSchema,
     summary: z.string().min(1),
-    changed_since_previous_scan: z.boolean(),
-    bull_case: z.string().optional().default(''),
-    bear_case: z.string().optional().default(''),
-    key_assumption: z.string().optional().default(''),
+    changed_since_previous_scan: z
+      .boolean()
+      .nullable()
+      .optional()
+      .default(false),
+    bull_case: z.string().nullable().optional().default(''),
+    bear_case: z.string().nullable().optional().default(''),
+    key_assumption: z.string().nullable().optional().default(''),
   }),
   fundamentals: z.record(z.string(), z.unknown()).optional().default({}),
   analysts: z.record(z.string(), z.unknown()).optional().default({}),
@@ -100,9 +89,9 @@ export const PortfolioSnapshotSchema = z.looseObject({
       previous_scan_run_id: z.string().optional().nullable(),
       price_change_since_previous_scan_pct: z.number().optional().nullable(),
       score_change: z.number().optional().nullable(),
-      signal_changed: z.boolean().optional().default(false),
+      signal_changed: z.boolean().nullable().optional().default(false),
       previous_signal: SignalSchema.optional().nullable(),
-      thesis_changed: z.boolean().optional().default(false),
+      thesis_changed: z.boolean().nullable().optional().default(false),
       previous_thesis_status: ThesisStatusSchema.optional().nullable(),
     })
     .optional()
@@ -118,13 +107,9 @@ export const ScanSchema = z.looseObject({
   run_type: RunTypeSchema,
   market: z.string().min(1),
   market_summary: z.looseObject({
-    sentiment: z.enum([
-      'very_bearish',
-      'bearish',
-      'neutral',
-      'bullish',
-      'very_bullish',
-    ]),
+    // Sentiment labels are authored by the scan and may be nuanced values such
+    // as "cautious" or "positive". Preserve any meaningful label.
+    sentiment: z.string().trim().min(1),
     summary: z.string().min(1),
   }),
   portfolio: z.array(PortfolioSnapshotSchema).min(1),

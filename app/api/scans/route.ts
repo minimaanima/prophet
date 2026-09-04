@@ -115,6 +115,11 @@ export async function POST(request: Request) {
   }
 
   const scan = result.data;
+  const originalPortfolio = Array.isArray(
+    (parsed as Record<string, unknown>).portfolio,
+  )
+    ? ((parsed as Record<string, unknown>).portfolio as unknown[])
+    : [];
   const statements = [
     db
       .prepare(
@@ -135,7 +140,7 @@ export async function POST(request: Request) {
         scan.market,
         scan.market_summary.sentiment,
         scan.market_summary.summary,
-        JSON.stringify(scan),
+        raw,
         now,
       ),
     db
@@ -148,7 +153,7 @@ export async function POST(request: Request) {
       .bind(scan.scan_run_id),
   ];
 
-  for (const item of scan.portfolio) {
+  for (const [itemIndex, item] of scan.portfolio.entries()) {
     const snapshotId = `${scan.scan_run_id}_${item.ticker}`;
     statements.push(
       db
@@ -187,7 +192,7 @@ export async function POST(request: Request) {
           item.assessment.risk,
           item.thesis.status,
           item.thesis.summary,
-          JSON.stringify(item),
+          JSON.stringify(originalPortfolio[itemIndex] ?? item),
           now,
         ),
     );
